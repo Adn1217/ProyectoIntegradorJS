@@ -1,30 +1,5 @@
 let valido = false;
 let continua = true;
-
-function calcularPrestamo(monto, tasa, cuotas){
-    let saldo = [];
-    let cuota = [];
-    let interes = [];
-    let interesi = 0;
-    let cuotai= monto*(tasa*(1+tasa)**plazo) / ((1+tasa)**plazo - 1);
-    let saldoi = monto;
-    let pagado = 0;
-
-    for(let i = 1; i<=cuotas; i++){
-        interesi = saldoi*(tasa);
-        saldoi -= (cuotai-interesi);
-        pagado += cuotai;
-        console.log("Cuota ",i,": ",cuotai.toFixed(3));
-        console.log("Interes ",i,": ",interesi.toFixed(3));
-        console.log("Saldo ",i,": ",saldoi.toFixed(3));
-        console.log("Pagado: ", pagado.toFixed(3));
-        interes.push(interesi.toFixed(3));
-        cuota.push(cuotai.toFixed(3));
-        saldo.push(saldoi.toFixed(3));
-    }
-    return [interes, cuota, saldo]
-}
-
 let tasa = 0;
 let monto = 0;
 let cuotas = 0;
@@ -56,8 +31,9 @@ if(valido){
         monto = parseFloat(prompt("Digite monto prestado"));
         if (monto>0){
             valido = true;
-            let calculo = calcularPrestamo(monto, tasa, plazo);
-            console.log(calculo);
+            const prestamo = new Prestamo(tasa, cuotas, monto);
+            let calculo = prestamo.calcularPrestamo(monto, tasa, plazo);
+            console.table(calculo);
         }else {
             continua = confirm("Debe ingresar un número positivo válido")
         }
