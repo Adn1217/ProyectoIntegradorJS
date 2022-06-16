@@ -5,6 +5,7 @@ let monto = 0;
 let cuotas = 0;
 let calculo = [];
 let cuotaBuscada = 0;
+let valorReferencia = 0;
 
 do {
     cuotas = parseInt(prompt("Digite número de meses"));
@@ -43,7 +44,7 @@ if(valido){
                 <td>${calculo[0][0]}</td>
                 <td>${calculo[1][0]}</td>
                 <td>${calculo[2][0]}</td>
-                <td>${calculo[3][0]}</td>
+                <td class="pagado">${calculo[3][0]}</td>
                 </tr>`;
             for(let i=1; i<calculo[0].length;i++){
                 table.innerHTML += `<tr id=cuota${i+1}>
@@ -51,7 +52,7 @@ if(valido){
                 <td>${calculo[0][i]}</td>
                 <td>${calculo[1][i]}</td>
                 <td>${calculo[2][i]}</td>
-                <td>${calculo[3][i]}</td>
+                <td class="pagado">${calculo[3][i]}</td>
                 </tr>`
             }
         }else {
@@ -77,5 +78,19 @@ if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
     }
 }
 
+if(valido && confirm("¿Desea resaltar pagos acumulados menores a uno puntual?")){
+
+    valorReferencia = parseFloat(prompt("Digite valor de referencia"));
+    const celdas = document.getElementsByClassName("pagado");
+    let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
+    Array.from(celdas).forEach(celda => {
+        if (menores.includes(celda.textContent)){
+            celda.className = "cuotaMenor";
+        }
+    });
+
+    alert("Valores de cuota menores en azul")
+
+}
 alert("Muchas gracias por usar nuestros servicios")
 
