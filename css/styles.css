@@ -13,3 +13,8 @@ label {
 th, td {
     min-width: 100px;
 }
+
+.cuotaEncontrada {
+    color: red;
+    font-weight: bold;
+}

@@ -1,6 +1,7 @@
 class Prestamo {
 
     constructor(tasa, numCuotas, monto){
+        this.numCuota = [];
         this.tasa = tasa;
         this.numCuotas = numCuotas;
         this.interesCuota = [];
@@ -32,10 +33,11 @@ class Prestamo {
             console.log("Pagado: ", pagadoi.toFixed(3));
 
             this.interesCuota.push(interesi.toFixed(3));
+            this.numCuota.push(i);
             this.cuota.push(cuotai.toFixed(3));
             this.saldo.push(saldoi.toFixed(3));
             this.pagado.push(pagadoi.toFixed(3));
         }
-        return [this.interesCuota, this.cuota, this.saldo, this.pagado]
+        return [this.interesCuota, this.cuota, this.saldo, this.pagado, this.numCuota]
     }
 }

@@ -3,6 +3,8 @@ let continua = true;
 let tasa = 0;
 let monto = 0;
 let cuotas = 0;
+let calculo = [];
+let cuotaBuscada = 0;
 
 do {
     cuotas = parseInt(prompt("Digite número de meses"));
@@ -32,11 +34,11 @@ if(valido){
         if (monto>0){
             valido = true;
             const prestamo = new Prestamo(tasa, cuotas, monto);
-            let calculo = prestamo.calcularPrestamo();
+            calculo = prestamo.calcularPrestamo();
             console.table(prestamo);
             const table = document.querySelector("tbody");
-            console.log(table);
-            table.innerHTML = `<tr>
+            // console.log(table);
+            table.innerHTML = `<tr id=cuota1>
                 <td>${1}</td>
                 <td>${calculo[0][0]}</td>
                 <td>${calculo[1][0]}</td>
@@ -44,7 +46,7 @@ if(valido){
                 <td>${calculo[3][0]}</td>
                 </tr>`;
             for(let i=1; i<calculo[0].length;i++){
-                table.innerHTML += `<tr>
+                table.innerHTML += `<tr id=cuota${i+1}>
                 <td>${i+1}</td>
                 <td>${calculo[0][i]}</td>
                 <td>${calculo[1][i]}</td>
@@ -56,6 +58,23 @@ if(valido){
             continua = confirm("Debe ingresar un número positivo válido")
         }
     }while(!valido && continua)
+}
+
+if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
+    do {
+        cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
+        if(cuotaBuscada<=0){
+            alert("Debe digitar un número mayor a cero")
+        }
+    } while (cuotaBuscada<=0)
+
+    if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
+        const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
+        cuotaEncontrada.className = "cuotaEncontrada";
+        alert("Cuota encontrada y resaltada en rojo")
+    }else{
+        alert("El préstamo no tiene esa cuota")
+    }
 }
 
 alert("Muchas gracias por usar nuestros servicios")
