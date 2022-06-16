@@ -1,30 +1,29 @@
 class Prestamo {
 
-    constructor(tasa, cuotas, saldo, pagado=0){
-        this.interes = tasa;
-        this.cuotas = cuotas;
-        this.saldo = saldo;
-        this.pagado = pagado;
+    constructor(tasa, numCuotas, monto){
+        this.numCuota = [];
+        this.tasa = tasa;
+        this.numCuotas = numCuotas;
+        this.interesCuota = [];
+        this.cuota = [];
+        this.monto = monto;
+        this.saldo = [];
+        this.pagado = [];
     }  
 
-    calcularCuota(monto, tasa=this.interes, plazo=this.cuotas){
+    calcularCuota(monto, tasa=this.tasa, plazo=this.numCuotas){
         let valorCuota= monto*(tasa*(1+tasa)**plazo) / ((1+tasa)**plazo - 1);
         return valorCuota;
     }
 
-    calcularPrestamo(monto, tasa, cuotas){
-        const prestamo = new Prestamo(tasa, cuotas, monto);
-        let saldo = [];
-        let cuota = [];
-        let interes = [];
+    calcularPrestamo(){
         let interesi = 0;
-        let cuotai= prestamo.calcularCuota(monto, tasa, cuotas) ;
-        let saldoi = monto;
+        let saldoi = this.monto;
+        let cuotai = this.calcularCuota(saldoi, this.tasa, this.numCuotas);
         let pagadoi = 0;
-        let pagado = [];
 
-        for(let i = 1; i<=cuotas; i++){
-            interesi = saldoi*(tasa);
+        for(let i = 1; i<=this.numCuotas; i++){
+            interesi = saldoi*(this.tasa);
             saldoi -= (cuotai-interesi);
             pagadoi += cuotai;
 
@@ -33,11 +32,12 @@ class Prestamo {
             console.log("Saldo ",i,": ",saldoi.toFixed(3));
             console.log("Pagado: ", pagadoi.toFixed(3));
 
-            interes.push(interesi.toFixed(3));
-            cuota.push(cuotai.toFixed(3));
-            saldo.push(saldoi.toFixed(3));
-            pagado.push(pagadoi.toFixed(3));
+            this.interesCuota.push(interesi.toFixed(3));
+            this.numCuota.push(i);
+            this.cuota.push(cuotai.toFixed(3));
+            this.saldo.push(saldoi.toFixed(3));
+            this.pagado.push(pagadoi.toFixed(3));
         }
-        return [interes, cuota, saldo, pagado]
+        return [this.interesCuota, this.cuota, this.saldo, this.pagado, this.numCuota]
     }
 }

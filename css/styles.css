@@ -9,3 +9,12 @@ label {
 .btn-primary {
     margin: 10px;
 }
+
+th, td {
+    min-width: 100px;
+}
+
+.cuotaEncontrada {
+    color: red;
+    font-weight: bold;
+}
