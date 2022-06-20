@@ -11,8 +11,11 @@ do {
     cuotas = parseInt(prompt("Digite número de meses"));
     if (cuotas>0){
         valido = true;
+        document.getElementById("inputMonths").className="form-control";
     }else {
         continua = confirm("Debe ingresar un número positivo válido")
+        document.getElementById("inputMonths").className="form-control error";
+        document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido";
     }
 }while(!valido && continua)
 
@@ -22,8 +25,11 @@ if(valido){
         tasa = parseFloat(prompt("Digite tasa de interés mensual"));
         if (tasa>0 && tasa<=1){
             valido = true;
+            document.getElementById("inputRate").className="form-control";
         }else {
             continua = confirm("Debe ingresar un número positivo entre cero y uno")
+            document.getElementById("inputRate").className="form-control error";
+            document.getElementById("errorLabel").innerText="Debe ingresar un número positivo entre cero y uno";
         }
     }while(!valido && continua)
 }
@@ -55,8 +61,11 @@ if(valido){
                 <td class="pagado">${calculo[3][i]}</td>
                 </tr>`
             }
+        document.getElementById("inputAmount").className="form-control";
         }else {
             continua = confirm("Debe ingresar un número positivo válido")
+            document.getElementById("inputAmount").className="form-control error";
+            document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido";
         }
     }while(!valido && continua)
 }
@@ -72,7 +81,7 @@ if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
     if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
         const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
         cuotaEncontrada.className = "cuotaEncontrada";
-        alert("Cuota encontrada y resaltada en rojo")
+        alert("Cuota encontrada y resaltada en verde")
     }else{
         alert("El préstamo no tiene esa cuota")
     }
