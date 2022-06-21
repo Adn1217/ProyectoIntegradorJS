@@ -19,30 +19,33 @@
           <div class="col-auto">
             <label for="inputMonths">Plazo</label>
             <input type="text" class="form-control" id="inputMonths" placeholder="Ingrese plazo en meses">
-            <label for="inputRate">Tasa</label>
+            <label for="inputRate">Tasa mensual</label>
             <input type="text" class="form-control" id="inputRate" placeholder="Ingrese tasa de interés">
             <label for="inputAmount">Monto</label>
             <input type="text" class="form-control" id="inputAmount" placeholder="Ingrese monto a prestar">
             <button id="btnSimular" type="submit" class="btn btn-primary mb-3">Simular</button>
+            <label id="errorLabel"></label>
           </div>
         </form>
       </div>
       <div class="container-fluid">
         <h2>Buscador</h2>
         <form class="row g-3">
-          <div class="col-auto">
-            <label for="inputSearchMonth">Cuota</label>
-            <input type="text" class="form-control" id="inputSearchMonth" placeholder="Ingrese cuota a buscar">
-            <button id="btnBuscar" type="submit" class="btn btn-primary mb-3" disabled>Buscar</button>
-            <label for="inputSearchAmount">Monto cuota máximo</label>
-            <input type="text" class="form-control" id="inputSearchAmount" placeholder="Ingrese valor cuota hasta">
-            <button id="btnMonto" type="submit" class="btn btn-primary mb-3" disabled>Resaltar</button>
-          </div>
+          <fieldset disabled>
+            <div class="col-auto">
+              <label for="inputSearchMonth">Cuota</label>
+              <input type="text" class="form-control" id="inputSearchMonth" placeholder="Ingrese cuota a buscar">
+              <button id="btnBuscar" type="submit" class="btn btn-primary mb-3" disabled>Buscar</button>
+              <label for="inputSearchAmount">Monto cuota máximo</label>
+              <input type="text" class="form-control" id="inputSearchAmount" placeholder="Ingrese valor cuota hasta">
+              <button id="btnMonto" type="submit" class="btn btn-primary mb-3" disabled>Resaltar</button>
+              <label id="errorLabel2"></label>
+            </div>
+          </fieldset>
         </form>
       </div>
     </div>
-      <label id="errorLabel"></label>
-      <h2>Resultados</h2>
+      <h2 id="Resultados">Resultados</h2>
       <table>
         <thead>
             <tr>
@@ -62,7 +65,10 @@
       let btnSimular = document.getElementById("btnSimular");
       btnSimular = addEventListener("submit", (event) =>{
         event.preventDefault();
-        Simular()
+        let cuotas = parseInt(document.getElementById("inputMonths").value);
+        let tasa = parseFloat(document.getElementById("inputRate").value);
+        let monto = parseFloat(document.getElementById("inputAmount").value);
+        Simular(cuotas, tasa, monto);
       })
     </script>
 </body>

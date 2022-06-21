@@ -1,44 +1,46 @@
 let valido = false;
 let continua = true;
-let tasa = 0;
+// let tasa = 0;
 let monto = 0;
-let cuotas = 0;
+// let cuotas = 0;
 let calculo = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
 
-function Simular (e) {
-    do {
-        cuotas = parseInt(prompt("Digite número de meses"));
+function Simular (cuotas, tasa, monto) {
+    // do {
+        // cuotas = parseInt(prompt("Digite número de meses"));
         if (cuotas>0){
             valido = true;
             document.getElementById("inputMonths").className="form-control";
         }else {
-            continua = confirm("Debe ingresar un número positivo válido")
+            // continua = confirm("Debe ingresar un número positivo válido.")
             document.getElementById("inputMonths").className="form-control error";
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
         }
-    }while(!valido && continua)
+    // }while(!valido && continua)
+    // document.getElementById("inputMonths").value = cuotas;
 
     if(valido){
         valido = false;
-        do {
-            tasa = parseFloat(prompt("Digite tasa de interés mensual"));
+        // do {
+            // tasa = parseFloat(prompt("Digite tasa de interés mensual"));
             if (tasa>0 && tasa<=1){
                 valido = true;
                 document.getElementById("inputRate").className="form-control";
             }else {
-                continua = confirm("Debe ingresar un número positivo entre cero y uno.")
+                // continua = confirm("Debe ingresar un número positivo entre cero y uno.")
                 document.getElementById("inputRate").className="form-control error";
                 document.getElementById("errorLabel").innerText="Debe ingresar un número positivo entre cero y uno.";
             }
-        }while(!valido && continua)
+        // }while(!valido && continua)
+            // document.getElementById("inputRate").value = tasa;
     }
 
     if(valido){
         valido = false;
-        do {
-            monto = parseFloat(prompt("Digite monto prestado"));
+        // do {
+            // monto = parseFloat(prompt("Digite monto prestado"));
             if (monto>0){
                 valido = true;
                 const prestamo = new Prestamo(tasa, cuotas, monto);
@@ -64,15 +66,16 @@ function Simular (e) {
                 }
             document.getElementById("inputAmount").className="form-control";
             }else {
-                continua = confirm("Debe ingresar un número positivo válido.")
+                // continua = confirm("Debe ingresar un número positivo válido.")
                 document.getElementById("inputAmount").className="form-control error";
                 document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
             }
-        }while(!valido && continua)
+        // }while(!valido && continua)
+        // document.getElementById("inputAmount").value = monto;
     }
 
     if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
-        do {
+        // do {
             cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
             document.getElementById("inputSearchMonth").className="form-control";
             if(cuotaBuscada<=0){
@@ -80,8 +83,8 @@ function Simular (e) {
                 document.getElementById("inputSearchMonth").className="form-control error";
                 document.getElementById("errorLabel").innerText="Debe digitar un número mayor a cero.";
             }
-        } while (cuotaBuscada<=0)
-
+        // } while (cuotaBuscada<=0)
+            document.getElementById("inputSearchMonth").value = cuotaBuscada;
         if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
             const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
             cuotaEncontrada.className = "cuotaEncontrada";
@@ -105,6 +108,7 @@ function Simular (e) {
 
         alert("Valores de cuota menores en azul.")
 
+        document.getElementById("inputSearchAmount").value = valorReferencia;
     }
-    alert("Muchas gracias por usar nuestros servicios.")
+    // alert("Muchas gracias por usar nuestros servicios.")
 }
