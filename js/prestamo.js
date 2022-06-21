@@ -73,8 +73,11 @@ if(valido){
 if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
     do {
         cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
+        document.getElementById("inputSearchMonth").className="form-control";
         if(cuotaBuscada<=0){
             alert("Debe digitar un número mayor a cero")
+            document.getElementById("inputSearchMonth").className="form-control error";
+            document.getElementById("errorLabel").innerText="Debe digitar un número mayor a cero";
         }
     } while (cuotaBuscada<=0)
 
@@ -84,6 +87,7 @@ if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
         alert("Cuota encontrada y resaltada en verde")
     }else{
         alert("El préstamo no tiene esa cuota")
+        document.getElementById("errorLabel").innerText="El préstamo no tiene esa cuota";
     }
 }
 

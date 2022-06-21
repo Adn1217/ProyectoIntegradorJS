@@ -33,3 +33,15 @@ th, td {
     color: blue;
     font-weight: bold;
 }
+
+.container {
+    display: flex;
+}
+
+.btn{
+    display: block;
+}
+
+h1, h2 {
+    display: inline-block;
+}
