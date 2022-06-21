@@ -110,5 +110,5 @@ function Simular (cuotas, tasa, monto) {
 
         document.getElementById("inputSearchAmount").value = valorReferencia;
     }
-    alert("Muchas gracias por usar nuestros servicios.")
+    // alert("Muchas gracias por usar nuestros servicios.")
 }
