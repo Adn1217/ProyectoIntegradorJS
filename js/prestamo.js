@@ -1,46 +1,46 @@
 let valido = false;
 let continua = true;
-let tasa = 0;
+// let tasa = 0;
 let monto = 0;
-let cuotas = 0;
+// let cuotas = 0;
 let calculo = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
 
-function Simular (e) {
+function Simular (cuotas, tasa, monto) {
     // do {
-        cuotas = parseInt(prompt("Digite número de meses"));
+        // cuotas = parseInt(prompt("Digite número de meses"));
         if (cuotas>0){
             valido = true;
             document.getElementById("inputMonths").className="form-control";
         }else {
-            continua = confirm("Debe ingresar un número positivo válido")
+            // continua = confirm("Debe ingresar un número positivo válido.")
             document.getElementById("inputMonths").className="form-control error";
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
         }
     // }while(!valido && continua)
-    document.getElementById("inputMonths").value = cuotas;
+    // document.getElementById("inputMonths").value = cuotas;
 
     if(valido){
         valido = false;
         // do {
-            tasa = parseFloat(prompt("Digite tasa de interés mensual"));
+            // tasa = parseFloat(prompt("Digite tasa de interés mensual"));
             if (tasa>0 && tasa<=1){
                 valido = true;
                 document.getElementById("inputRate").className="form-control";
             }else {
-                continua = confirm("Debe ingresar un número positivo entre cero y uno.")
+                // continua = confirm("Debe ingresar un número positivo entre cero y uno.")
                 document.getElementById("inputRate").className="form-control error";
                 document.getElementById("errorLabel").innerText="Debe ingresar un número positivo entre cero y uno.";
             }
         // }while(!valido && continua)
-            document.getElementById("inputRate").value = tasa;
+            // document.getElementById("inputRate").value = tasa;
     }
 
     if(valido){
         valido = false;
         // do {
-            monto = parseFloat(prompt("Digite monto prestado"));
+            // monto = parseFloat(prompt("Digite monto prestado"));
             if (monto>0){
                 valido = true;
                 const prestamo = new Prestamo(tasa, cuotas, monto);
@@ -66,12 +66,12 @@ function Simular (e) {
                 }
             document.getElementById("inputAmount").className="form-control";
             }else {
-                continua = confirm("Debe ingresar un número positivo válido.")
+                // continua = confirm("Debe ingresar un número positivo válido.")
                 document.getElementById("inputAmount").className="form-control error";
                 document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
             }
         // }while(!valido && continua)
-        document.getElementById("inputAmount").value = monto;
+        // document.getElementById("inputAmount").value = monto;
     }
 
     if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
