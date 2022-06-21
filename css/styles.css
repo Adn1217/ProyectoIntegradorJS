@@ -15,11 +15,33 @@ th, td {
 }
 
 .cuotaEncontrada {
+    color: green;
+    font-weight: bold;
+}
+
+#errorLabel {
     color: red;
     font-weight: bold;
+    margin: 0px 0px 50px 0px;
+    }
+
+.error {
+    border-color: red;
 }
 
 .cuotaMenor {
     color: blue;
     font-weight: bold;
+}
+
+.container {
+    display: flex;
+}
+
+.btn{
+    display: block;
+}
+
+h1, h2, h3 {
+    display: inline-block;
 }
