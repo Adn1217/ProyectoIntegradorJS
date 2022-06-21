@@ -8,7 +8,7 @@ let cuotaBuscada = 0;
 let valorReferencia = 0;
 
 function Simular (e) {
-    do {
+    // do {
         cuotas = parseInt(prompt("Digite número de meses"));
         if (cuotas>0){
             valido = true;
@@ -18,7 +18,7 @@ function Simular (e) {
             document.getElementById("inputMonths").className="form-control error";
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
         }
-    }while(!valido && continua)
+    // }while(!valido && continua)
 
     if(valido){
         valido = false;
