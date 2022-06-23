@@ -107,6 +107,7 @@ simuleForm.addEventListener("submit", (event) =>{
     let cuotas = parseInt(document.getElementById("inputMonths").value);
     let tasa = parseFloat(document.getElementById("inputRate").value);
     let monto = parseFloat(document.getElementById("inputAmount").value);
+    document.getElementById("errorLabel").innerText="";
     Simular(cuotas, tasa, monto);
     document.getElementById("searchFieldset").disabled = false;
 })
