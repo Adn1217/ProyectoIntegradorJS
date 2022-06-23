@@ -36,6 +36,7 @@ th, td {
 
 .container {
     display: flex;
+    justify-content: center
 }
 
 .btn{

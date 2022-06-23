@@ -56,14 +56,17 @@ function Simular (cuotas, tasa, monto) {
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
         }
     }
+}
+
+function buscarCuota(cuotaBuscada) {
 
     if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
-        cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
+        // cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
         document.getElementById("inputSearchMonth").className="form-control";
         if(cuotaBuscada<=0){
             alert("Debe digitar un número mayor a cero")
             document.getElementById("inputSearchMonth").className="form-control error";
-            document.getElementById("errorLabel").innerText="Debe digitar un número mayor a cero.";
+            document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
         }
         document.getElementById("inputSearchMonth").value = cuotaBuscada;
         if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
@@ -72,7 +75,7 @@ function Simular (cuotas, tasa, monto) {
             alert("Cuota encontrada y resaltada en verde.")
         }else{
             alert("El préstamo no tiene esa cuota")
-            document.getElementById("errorLabel").innerText="El préstamo no tiene esa cuota";
+            document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
         }
     }
 
@@ -91,3 +94,19 @@ function Simular (cuotas, tasa, monto) {
         document.getElementById("inputSearchAmount").value = valorReferencia;
     }
 }
+
+let btnSimular = document.getElementById("btnSimular");
+btnSimular = addEventListener("submit", (event) =>{
+    event.preventDefault();
+    let cuotas = parseInt(document.getElementById("inputMonths").value);
+    let tasa = parseFloat(document.getElementById("inputRate").value);
+    let monto = parseFloat(document.getElementById("inputAmount").value);
+    Simular(cuotas, tasa, monto);
+    document.getElementById("searchFieldset").disabled = false;
+})
+
+let btnBuscar = document.getElementById("btnBuscar");
+btnBuscar = addEventListener("click", () => {
+    let cuota = parseInt(document.getElementById("inputSearchMonth").value)
+    buscarCuota(cuota);
+})
