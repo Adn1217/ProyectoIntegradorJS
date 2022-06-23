@@ -24,11 +24,15 @@ th, td {
     font-weight: bold;
 }
 
-#errorLabel {
+.errorLabel {
     color: red;
     font-weight: bold;
     margin: 0px 0px 50px 0px;
     }
+
+.infoLabel {
+    color: darkslategrey;
+}
 
 .error {
     border-color: red;
@@ -41,6 +45,7 @@ th, td {
 
 .container {
     display: flex;
+    justify-content: center
 }
 
 .btn{

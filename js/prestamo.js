@@ -56,29 +56,36 @@ function Simular (cuotas, tasa, monto) {
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
         }
     }
+}
 
-    if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
-        cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
+function buscarCuota(cuotaBuscada) {
+
+    // if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
+        // cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
         document.getElementById("inputSearchMonth").className="form-control";
         if(cuotaBuscada<=0){
-            alert("Debe digitar un número mayor a cero")
+            // alert("Debe digitar un número mayor a cero")
             document.getElementById("inputSearchMonth").className="form-control error";
-            document.getElementById("errorLabel").innerText="Debe digitar un número mayor a cero.";
+            document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
         }
         document.getElementById("inputSearchMonth").value = cuotaBuscada;
         if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
             const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
             cuotaEncontrada.className = "cuotaEncontrada";
-            alert("Cuota encontrada y resaltada en verde.")
+            // alert("Cuota encontrada y resaltada en verde.")
+            document.getElementById("errorLabel2").className="infoLabel";
+            document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
         }else{
-            alert("El préstamo no tiene esa cuota")
-            document.getElementById("errorLabel").innerText="El préstamo no tiene esa cuota";
+            // alert("El préstamo no tiene esa cuota")
+            document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
         }
-    }
+    // }
+}
 
-    if(valido && confirm("¿Desea resaltar pagos acumulados menores a uno puntual?")){
+function pagoMayor(valorReferencia) {
 
-        valorReferencia = parseFloat(prompt("Digite valor de referencia"));
+    // if(valido && confirm("¿Desea resaltar pagos acumulados menores a uno puntual?")){
+        // valorReferencia = parseFloat(prompt("Digite valor de referencia"));
         const celdas = document.getElementsByClassName("pagado");
         let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
         Array.from(celdas).forEach(celda => {
@@ -87,7 +94,45 @@ function Simular (cuotas, tasa, monto) {
             }
         });
 
-        alert("Valores de cuota menores en azul.")
-        document.getElementById("inputSearchAmount").value = valorReferencia;
-    }
+        // alert("Valores de cuota menores en azul.")
+        // document.getElementById("inputSearchAmount").value = valorReferencia;
+        document.getElementById("errorLabel2").className="infoLabel";
+        document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
+    // }
 }
+
+let simuleForm = document.getElementById("simuleForm");
+simuleForm.addEventListener("submit", (event) =>{
+    event.preventDefault();
+    let cuotas = parseInt(document.getElementById("inputMonths").value);
+    let tasa = parseFloat(document.getElementById("inputRate").value);
+    let monto = parseFloat(document.getElementById("inputAmount").value);
+    Simular(cuotas, tasa, monto);
+    document.getElementById("searchFieldset").disabled = false;
+})
+
+let btnBuscar = document.getElementById("btnBuscar");
+btnBuscar.addEventListener("click", () => {
+    let cuota = parseInt(document.getElementById("inputSearchMonth").value);
+    document.getElementById("errorLabel2").innerText="";
+    document.getElementById("errorLabel2").className="errorLabel";
+    if(isNaN(cuota)){
+        document.getElementById("inputSearchMonth").className="form-control error";
+        document.getElementById("errorLabel2").innerText="Digite una cuota";
+    }else{
+        buscarCuota(cuota);
+    }
+})
+
+let btnMonto = document.getElementById("btnMonto");
+btnMonto.addEventListener("click", () => {
+    let monto = parseFloat(document.getElementById("inputSearchAmount").value);
+    document.getElementById("errorLabel2").innerText="";
+    document.getElementById("errorLabel2").className="errorLabel";
+    if( isNaN(monto)){
+        document.getElementById("inputSearchAmount").className="form-control error";
+        document.getElementById("errorLabel2").innerText="Digite un monto";
+    }else{
+        pagoMayor(monto);
+    }
+})
