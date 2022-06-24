@@ -60,11 +60,8 @@ function Simular (cuotas, tasa, monto) {
 
 function buscarCuota(cuotaBuscada) {
 
-    // if(valido && confirm("¿Desea buscar valores de una cuota especifica?")){
-        // cuotaBuscada = parseFloat(prompt("Digite la cuota a buscar"));
         document.getElementById("inputSearchMonth").className="form-control";
         if(cuotaBuscada<=0){
-            // alert("Debe digitar un número mayor a cero")
             document.getElementById("inputSearchMonth").className="form-control error";
             document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
         }
@@ -72,20 +69,15 @@ function buscarCuota(cuotaBuscada) {
         if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
             const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
             cuotaEncontrada.className = "cuotaEncontrada";
-            // alert("Cuota encontrada y resaltada en verde.")
             document.getElementById("errorLabel2").className="infoLabel";
             document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
         }else{
-            // alert("El préstamo no tiene esa cuota")
             document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
         }
-    // }
 }
 
 function pagoMayor(valorReferencia) {
 
-    // if(valido && confirm("¿Desea resaltar pagos acumulados menores a uno puntual?")){
-        // valorReferencia = parseFloat(prompt("Digite valor de referencia"));
         const celdas = document.getElementsByClassName("pagado");
         let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
         Array.from(celdas).forEach(celda => {
@@ -94,11 +86,8 @@ function pagoMayor(valorReferencia) {
             }
         });
 
-        // alert("Valores de cuota menores en azul.")
-        // document.getElementById("inputSearchAmount").value = valorReferencia;
         document.getElementById("errorLabel2").className="infoLabel";
         document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
-    // }
 }
 
 let simuleForm = document.getElementById("simuleForm");
