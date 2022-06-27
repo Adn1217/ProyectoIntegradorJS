@@ -4,8 +4,12 @@ let monto = 0;
 let calculo = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
+let localData =[];
 
 function Simular (cuotas, tasa, monto) {
+    
+    document.getElementById("msgLabel").innerText="";
+
     if (cuotas>0){
         valido = true;
         document.getElementById("inputMonths").className="form-control";
@@ -29,6 +33,9 @@ function Simular (cuotas, tasa, monto) {
         valido = false;
         if (monto>0){
             valido = true;
+            const dataIngresada = new dataLocal(tasa, cuotas, monto);
+            dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
+            // dataIngresada.guardarDataLocal(dataIngresada.tasaLocal, dataIngresada.numCuotaLocal, dataIngresada.montoLocal);
             const prestamo = new Prestamo(tasa, cuotas, monto);
             calculo = prestamo.calcularPrestamo();
             console.table(prestamo);
@@ -60,34 +67,35 @@ function Simular (cuotas, tasa, monto) {
 
 function buscarCuota(cuotaBuscada) {
 
-        document.getElementById("inputSearchMonth").className="form-control";
-        if(cuotaBuscada<=0){
-            document.getElementById("inputSearchMonth").className="form-control error";
-            document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
-        }
-        document.getElementById("inputSearchMonth").value = cuotaBuscada;
-        if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
-            const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
-            cuotaEncontrada.className = "cuotaEncontrada";
-            document.getElementById("errorLabel2").className="infoLabel";
-            document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
-        }else{
-            document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
-        }
+    document.getElementById("inputSearchMonth").className="form-control";
+    document.getElementById("msgLabel").innerText="";
+    if(cuotaBuscada<=0){
+        document.getElementById("inputSearchMonth").className="form-control error";
+        document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
+    }
+    document.getElementById("inputSearchMonth").value = cuotaBuscada;
+    if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
+        const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
+        cuotaEncontrada.className = "cuotaEncontrada";
+        document.getElementById("errorLabel2").className="infoLabel";
+        document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
+    }else{
+        document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
+    }
 }
 
 function pagoMayor(valorReferencia) {
 
-        const celdas = document.getElementsByClassName("pagado");
-        let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
-        Array.from(celdas).forEach(celda => {
-            if (menores.includes(celda.textContent)){
-                celda.className = "cuotaMenor";
-            }
-        });
+    const celdas = document.getElementsByClassName("pagado");
+    let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
+    Array.from(celdas).forEach(celda => {
+        if (menores.includes(celda.textContent)){
+            celda.className = "cuotaMenor";
+        }
+    });
 
-        document.getElementById("errorLabel2").className="infoLabel";
-        document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
+    document.getElementById("errorLabel2").className="infoLabel";
+    document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
 }
 
 let simuleForm = document.getElementById("simuleForm");
@@ -126,3 +134,25 @@ btnMonto.addEventListener("click", () => {
         pagoMayor(monto);
     }
 })
+
+let btnBorrarCache = document.getElementById("btnBorrarCache");
+btnBorrarCache.addEventListener("click", () => {
+    let datosLocales = new dataLocal();
+    let dataEliminada = datosLocales.borrarDataLocal();
+    if (dataEliminada.length !== 0){
+        document.getElementById("msgLabel").innerText="Data local eliminada exitosamente";
+    }else{
+        document.getElementById("msgLabel").innerText="No existen datos locales";
+    }
+})
+
+window.onload = () => {
+    let datosLocales = new dataLocal();
+    let dataLocalCargada = datosLocales.cargarDataLocal();
+    console.log(dataLocalCargada);
+    if (dataLocalCargada.length !== 0){
+        document.getElementById("inputMonths").value= dataLocalCargada.numCuotaLocal;
+        document.getElementById("inputAmount").value= dataLocalCargada.montoLocal;
+        document.getElementById("inputRate").value= dataLocalCargada.tasaLocal;
+    }
+}
