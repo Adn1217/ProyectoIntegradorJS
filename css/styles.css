@@ -13,6 +13,7 @@ label {
 table {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 100px;
 }
 
 th, td {
@@ -52,10 +53,14 @@ th, td {
     display: block;
 }
 
-h2 {
-    display: inline-block;
+.center, #cache {
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
+}
+
+h2 {
+    display: inline-block;
 }
 
 h1, #Resultados {
