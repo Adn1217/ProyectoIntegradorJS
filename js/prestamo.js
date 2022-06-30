@@ -16,6 +16,7 @@ function Simular (cuotas, tasa, monto) {
     }else {
         document.getElementById("inputMonths").className="form-control error";
         document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
+        MsgPopUp('Debe ingresar un número positivo válido')
     }
 
     if(valido){
@@ -26,6 +27,7 @@ function Simular (cuotas, tasa, monto) {
         }else {
             document.getElementById("inputRate").className="form-control error";
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo entre cero y uno.";
+            MsgPopUp('Debe ingresar un número positivo entre cero y uno')
         }
     }
 
@@ -61,6 +63,7 @@ function Simular (cuotas, tasa, monto) {
         }else {
             document.getElementById("inputAmount").className="form-control error";
             document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
+            MsgPopUp('Debe ingresar un número positivo válido');
         }
     }
 }
@@ -71,7 +74,8 @@ function buscarCuota(cuotaBuscada) {
     document.getElementById("msgLabel").innerText="";
     if(cuotaBuscada<=0){
         document.getElementById("inputSearchMonth").className="form-control error";
-        document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
+        document.getElementById("errorLabel2").innerText="Debe ingresar un número mayor a cero.";
+        MsgPopUp('Debe ingresar un número mayor a cero');
     }
     document.getElementById("inputSearchMonth").value = cuotaBuscada;
     if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
@@ -79,8 +83,10 @@ function buscarCuota(cuotaBuscada) {
         cuotaEncontrada.className = "cuotaEncontrada";
         document.getElementById("errorLabel2").className="infoLabel";
         document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
+        MsgPopUp('Cuota encontrada y resaltada en verde','Atención', 'info');
     }else{
         document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
+        MsgPopUp('El préstamo no tiene esa cuota');
     }
 }
 
@@ -96,6 +102,7 @@ function pagoMayor(valorReferencia) {
 
     document.getElementById("errorLabel2").className="infoLabel";
     document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
+    MsgPopUp(`Valores de cuota menores que  ${valorReferencia} resaltados en azul`,'Atención', 'info');
 }
 
 let simuleForm = document.getElementById("simuleForm");
@@ -117,6 +124,7 @@ btnBuscar.addEventListener("click", () => {
     if(isNaN(cuota)){
         document.getElementById("inputSearchMonth").className="form-control error";
         document.getElementById("errorLabel2").innerText="Digite una cuota";
+        MsgPopUp(`Es necesario que digite una cuota`,'Atención', 'info');
     }else{
         buscarCuota(cuota);
     }
@@ -130,6 +138,7 @@ btnMonto.addEventListener("click", () => {
     if( isNaN(monto)){
         document.getElementById("inputSearchAmount").className="form-control error";
         document.getElementById("errorLabel2").innerText="Digite un monto";
+        MsgPopUp(`Es necesario que digite un monto`,'Atención', 'info');
     }else{
         pagoMayor(monto);
     }
@@ -141,10 +150,20 @@ btnBorrarCache.addEventListener("click", () => {
     let dataEliminada = datosLocales.borrarDataLocal();
     if (dataEliminada.length !== 0){
         document.getElementById("msgLabel").innerText="Data local eliminada exitosamente";
+        MsgPopUp('Data local eliminada exitosamente','Atención', 'success');
     }else{
         document.getElementById("msgLabel").innerText="No existen datos locales";
+        MsgPopUp('No existen datos locales','Atención', 'info');
     }
 })
+
+function MsgPopUp(msg, title, type) {
+    Swal.fire({
+        icon: type || 'error',
+        title: title || '',
+        text: msg ||'Ha ocurrido un error',
+      })
+}
 
 window.onload = () => {
     let datosLocales = new dataLocal();
