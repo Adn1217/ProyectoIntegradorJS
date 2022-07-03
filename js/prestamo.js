@@ -42,7 +42,6 @@ function Simular (cuotas, tasa, monto) {
             calculo = prestamo.calcularPrestamo();
             console.table(prestamo);
             const table = document.querySelector("tbody");
-            // console.log(table);
             table.innerHTML = `<tr id=cuota1>
                 <td>${1}</td>
                 <td>${calculo[0][0]}</td>
@@ -50,7 +49,7 @@ function Simular (cuotas, tasa, monto) {
                 <td>${calculo[2][0]}</td>
                 <td class="pagado">${calculo[3][0]}</td>
                 </tr>`;
-            for(let i=1; i<calculo[0].length;i++){
+            for(let i=1; i<calculo[0].length; i++){
                 table.innerHTML += `<tr id=cuota${i+1}>
                 <td>${i+1}</td>
                 <td>${calculo[0][i]}</td>
@@ -71,22 +70,24 @@ function Simular (cuotas, tasa, monto) {
 function buscarCuota(cuotaBuscada) {
 
     document.getElementById("inputSearchMonth").className="form-control";
+    document.getElementById("inputSearchMonth").value = cuotaBuscada;
     document.getElementById("msgLabel").innerText="";
+
     if(cuotaBuscada<=0){
         document.getElementById("inputSearchMonth").className="form-control error";
         document.getElementById("errorLabel2").innerText="Debe ingresar un número mayor a cero.";
         MsgPopUp('Debe ingresar un número mayor a cero');
-    }
-    document.getElementById("inputSearchMonth").value = cuotaBuscada;
-    if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
-        const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
-        cuotaEncontrada.className = "cuotaEncontrada";
-        document.getElementById("errorLabel2").className="infoLabel";
-        document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
-        MsgPopUp('Cuota encontrada y resaltada en verde','Atención', 'info');
     }else{
-        document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
-        MsgPopUp('El préstamo no tiene esa cuota');
+        if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
+            const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
+            cuotaEncontrada.className = "cuotaEncontrada";
+            document.getElementById("errorLabel2").className="infoLabel";
+            document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
+            MsgPopUp('Cuota encontrada y resaltada en verde','Atención', 'info');
+        }else{
+            document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
+            MsgPopUp('El préstamo no tiene esa cuota');
+        }
     }
 }
 
@@ -124,7 +125,7 @@ btnBuscar.addEventListener("click", () => {
     if(isNaN(cuota)){
         document.getElementById("inputSearchMonth").className="form-control error";
         document.getElementById("errorLabel2").innerText="Digite una cuota";
-        MsgPopUp(`Es necesario que digite una cuota`,'Atención', 'info');
+        MsgPopUp(`Es necesario que digite una cuota`,'Atención');
     }else{
         buscarCuota(cuota);
     }
@@ -138,7 +139,7 @@ btnMonto.addEventListener("click", () => {
     if( isNaN(monto)){
         document.getElementById("inputSearchAmount").className="form-control error";
         document.getElementById("errorLabel2").innerText="Digite un monto";
-        MsgPopUp(`Es necesario que digite un monto`,'Atención', 'info');
+        MsgPopUp(`Es necesario que digite un monto`,'Atención');
     }else{
         pagoMayor(monto);
     }
