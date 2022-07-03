@@ -69,6 +69,10 @@ h1, #Resultados {
     margin: 30px;
 }
 
+p {
+    width: 75%;
+}
+
 #Resultados {
     display: block;
 }

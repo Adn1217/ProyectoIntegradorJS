@@ -93,12 +93,15 @@ function buscarCuota(cuotaBuscada) {
 
 function pagoMayor(valorReferencia) {
 
+    const menoresAnteriores = document.getElementsByClassName("cuotaMenor"); 
+    Array.from(menoresAnteriores).forEach( celda => celda.className = "pagado");
     const celdas = document.getElementsByClassName("pagado");
-    let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
+    let menores = calculo[3].filter(cuota => parseFloat(cuota) < valorReferencia);
     Array.from(celdas).forEach(celda => {
-        if (menores.includes(celda.textContent)){
-            celda.className = "cuotaMenor";
-        }
+        menores.includes(celda.textContent) && (celda.className = "cuotaMenor");
+        // if (menores.includes(celda.textContent)){
+        //     celda.className = "cuotaMenor";
+        // }
     });
 
     document.getElementById("errorLabel2").className="infoLabel";
