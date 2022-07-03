@@ -2,9 +2,17 @@ let valido = false;
 let continua = true;
 let monto = 0;
 let calculo = [];
+let calculoMoneda = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
 let localData =[];
+
+let currencyFormat = {
+    style: 'currency',
+    currency: 'USD',
+}
+
+let moneda = new Intl.NumberFormat('en-US', currencyFormat );
 
 function Simular (cuotas, tasa, monto) {
     
@@ -40,22 +48,25 @@ function Simular (cuotas, tasa, monto) {
             // dataIngresada.guardarDataLocal(dataIngresada.tasaLocal, dataIngresada.numCuotaLocal, dataIngresada.montoLocal);
             const prestamo = new Prestamo(tasa, cuotas, monto);
             calculo = prestamo.calcularPrestamo();
+            calculo.forEach( col => {
+                calculoMoneda.push(col.map(moneda.format))
+                })
             console.table(prestamo);
             const table = document.querySelector("tbody");
             table.innerHTML = `<tr id=cuota1>
                 <td>${1}</td>
-                <td>${calculo[0][0]}</td>
-                <td>${calculo[1][0]}</td>
-                <td>${calculo[2][0]}</td>
-                <td class="pagado">${calculo[3][0]}</td>
+                <td>${calculoMoneda[0][0]}</td>
+                <td>${calculoMoneda[1][0]}</td>
+                <td>${calculoMoneda[2][0]}</td>
+                <td class="pagado">${calculoMoneda[3][0]}</td>
                 </tr>`;
             for(let i=1; i<calculo[0].length; i++){
                 table.innerHTML += `<tr id=cuota${i+1}>
                 <td>${i+1}</td>
-                <td>${calculo[0][i]}</td>
-                <td>${calculo[1][i]}</td>
-                <td>${calculo[2][i]}</td>
-                <td class="pagado">${calculo[3][i]}</td>
+                <td>${calculoMoneda[0][i]}</td>
+                <td>${calculoMoneda[1][i]}</td>
+                <td>${calculoMoneda[2][i]}</td>
+                <td class="pagado">${calculoMoneda[3][i]}</td>
                 </tr>`
             }
         document.getElementById("inputAmount").className="form-control";
