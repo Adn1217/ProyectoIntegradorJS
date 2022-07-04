@@ -32,11 +32,11 @@ class Prestamo {
             console.log("Saldo ",i,": ",saldoi.toFixed(3));
             console.log("Pagado: ", pagadoi.toFixed(3));
 
-            this.interesCuota.push(interesi.toFixed(3));
+            this.interesCuota.push(interesi);
             this.numCuota.push(i);
-            this.cuota.push(cuotai.toFixed(3));
-            this.saldo.push(saldoi.toFixed(3));
-            this.pagado.push(pagadoi.toFixed(3));
+            this.cuota.push(cuotai);
+            this.saldo.push(saldoi);
+            this.pagado.push(pagadoi);
         }
         return [this.interesCuota, this.cuota, this.saldo, this.pagado, this.numCuota]
     }

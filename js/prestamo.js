@@ -2,157 +2,208 @@ let valido = false;
 let continua = true;
 let monto = 0;
 let calculo = [];
+let calculoMoneda = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
 let localData =[];
 
+let currencyFormat = {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+}
+
+let moneda = new Intl.NumberFormat('en-US', currencyFormat );
+
 function Simular (cuotas, tasa, monto) {
     
-    document.getElementById("msgLabel").innerText="";
+    msgLabel1.innerText="";
 
     if (cuotas>0){
         valido = true;
-        document.getElementById("inputMonths").className="form-control";
+        inputMonths.className="form-control";
     }else {
-        document.getElementById("inputMonths").className="form-control error";
-        document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
+        inputMonths.className="form-control error";
+        errorLabel1.innerText="Debe ingresar un número positivo válido.";
+        MsgPopUp('Debe ingresar un número positivo válido')
     }
 
     if(valido){
         valido = false;
         if (tasa>0 && tasa<=1){
             valido = true;
-            document.getElementById("inputRate").className="form-control";
+            inputRate.className="form-control";
         }else {
-            document.getElementById("inputRate").className="form-control error";
-            document.getElementById("errorLabel").innerText="Debe ingresar un número positivo entre cero y uno.";
+            inputRate.className="form-control error";
+            errorLabel1.innerText="Debe ingresar un número positivo entre cero y uno.";
+            MsgPopUp('Debe ingresar un número positivo entre cero y uno')
         }
     }
 
     if(valido){
         valido = false;
-        if (monto>0){
+        if (monto>0 && !isNaN(monto)){
             valido = true;
-            const dataIngresada = new dataLocal(tasa, cuotas, monto);
+            const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
             dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
-            // dataIngresada.guardarDataLocal(dataIngresada.tasaLocal, dataIngresada.numCuotaLocal, dataIngresada.montoLocal);
             const prestamo = new Prestamo(tasa, cuotas, monto);
             calculo = prestamo.calcularPrestamo();
+            calculo.forEach( col => {
+                calculoMoneda.push(col.map(moneda.format))
+                })
             console.table(prestamo);
             const table = document.querySelector("tbody");
-            // console.log(table);
             table.innerHTML = `<tr id=cuota1>
                 <td>${1}</td>
-                <td>${calculo[0][0]}</td>
-                <td>${calculo[1][0]}</td>
-                <td>${calculo[2][0]}</td>
-                <td class="pagado">${calculo[3][0]}</td>
+                <td id=${calculo[0][0]}>${calculoMoneda[0][0]}</td>
+                <td id=${calculo[1][0]}>${calculoMoneda[1][0]}</td>
+                <td id=${calculo[2][0]}>${calculoMoneda[2][0]}</td>
+                <td id=${calculo[3][0]} class="pagado">${calculoMoneda[3][0]}</td>
                 </tr>`;
-            for(let i=1; i<calculo[0].length;i++){
+            for(let i=1; i<calculo[0].length; i++){
                 table.innerHTML += `<tr id=cuota${i+1}>
                 <td>${i+1}</td>
-                <td>${calculo[0][i]}</td>
-                <td>${calculo[1][i]}</td>
-                <td>${calculo[2][i]}</td>
-                <td class="pagado">${calculo[3][i]}</td>
+                <td id=${calculo[0][i]}>${calculoMoneda[0][i]}</td>
+                <td id=${calculo[1][i]}>${calculoMoneda[1][i]}</td>
+                <td id=${calculo[2][i]}>${calculoMoneda[2][i]}</td>
+                <td id=${calculo[3][i]} class="pagado">${calculoMoneda[3][i]}</td>
                 </tr>`
             }
-        document.getElementById("inputAmount").className="form-control";
+            inputAmount.className="form-control";
+            document.getElementById("searchFieldset").disabled = false;
+            valido = false;
         }else {
-            document.getElementById("inputAmount").className="form-control error";
-            document.getElementById("errorLabel").innerText="Debe ingresar un número positivo válido.";
+            inputAmount.className="form-control error";
+            errorLabel1.innerText="Debe ingresar un número positivo válido.";
+            MsgPopUp('Debe ingresar un número positivo válido');
         }
     }
 }
 
 function buscarCuota(cuotaBuscada) {
 
-    document.getElementById("inputSearchMonth").className="form-control";
-    document.getElementById("msgLabel").innerText="";
+    inputSearchMonth.className="form-control";
+    inputSearchMonth.value = cuotaBuscada;
+    msgLabel1.innerText="";
+
     if(cuotaBuscada<=0){
-        document.getElementById("inputSearchMonth").className="form-control error";
-        document.getElementById("errorLabel2").innerText="Debe digitar un número mayor a cero.";
-    }
-    document.getElementById("inputSearchMonth").value = cuotaBuscada;
-    if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
-        const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
-        cuotaEncontrada.className = "cuotaEncontrada";
-        document.getElementById("errorLabel2").className="infoLabel";
-        document.getElementById("errorLabel2").innerText="Cuota encontrada y resaltada en verde.";
+        inputSearchMonth.className="form-control error";
+        errorLabel2.innerText="Debe ingresar un número mayor a cero.";
+        MsgPopUp('Debe ingresar un número mayor a cero');
     }else{
-        document.getElementById("errorLabel2").innerText="El préstamo no tiene esa cuota";
+        if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
+            const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
+            cuotaEncontrada.className = "cuotaEncontrada";
+            errorLabel2.className="infoLabel";
+            errorLabel2.innerText="Cuota encontrada y resaltada en verde.";
+            MsgPopUp('Cuota encontrada y resaltada en verde','Atención', 'info');
+        }else{
+            errorLabel2.innerText="El préstamo no tiene esa cuota";
+            MsgPopUp('El préstamo no tiene esa cuota');
+        }
     }
+}
+
+function resetMenoresClass () {
+    const menoresAnteriores = document.getElementsByClassName("cuotaMenor"); 
+    Array.from(menoresAnteriores).forEach( celda => celda.className = "pagado");
 }
 
 function pagoMayor(valorReferencia) {
 
     const celdas = document.getElementsByClassName("pagado");
-    let menores = calculo[3].filter((cuota) => parseFloat(cuota) < valorReferencia);
+    let menores = calculo[3].filter(cuota => parseFloat(cuota) < valorReferencia);
     Array.from(celdas).forEach(celda => {
-        if (menores.includes(celda.textContent)){
-            celda.className = "cuotaMenor";
-        }
+        menores.includes(parseFloat(celda.id)) && (celda.className = "cuotaMenor");
+        // if (menores.includes(parseFloat(celda.id))){
+        //     celda.className = "cuotaMenor";
+        // }
     });
 
-    document.getElementById("errorLabel2").className="infoLabel";
-    document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
+    errorLabel2.className="infoLabel";
+    errorLabel2.innerText="Valores de cuota menores en azul.";
+    MsgPopUp(`Valores de cuota menores que $${valorReferencia} resaltados en azul`,'Atención', 'info');
 }
 
-let simuleForm = document.getElementById("simuleForm");
 simuleForm.addEventListener("submit", (event) =>{
     event.preventDefault();
-    let cuotas = parseInt(document.getElementById("inputMonths").value);
-    let tasa = parseFloat(document.getElementById("inputRate").value);
-    let monto = parseFloat(document.getElementById("inputAmount").value);
-    document.getElementById("errorLabel").innerText="";
+    let cuotas = parseInt(inputMonths.value);
+    let tasa = parseFloat(inputRate.value);
+    let num = inputAmount.value.replace(/,/g, "") //Remueve la coma.
+    let monto = parseFloat(num.substring(1)); // Remueve el símbolo de moneda.
+    errorLabel1.innerText="";
     Simular(cuotas, tasa, monto);
-    document.getElementById("searchFieldset").disabled = false;
 })
 
-let btnBuscar = document.getElementById("btnBuscar");
 btnBuscar.addEventListener("click", () => {
-    let cuota = parseInt(document.getElementById("inputSearchMonth").value);
-    document.getElementById("errorLabel2").innerText="";
-    document.getElementById("errorLabel2").className="errorLabel";
+    let cuota = parseInt(inputSearchMonth.value);
+    errorLabel2.innerText="";
+    errorLabel2.className="errorLabel";
     if(isNaN(cuota)){
-        document.getElementById("inputSearchMonth").className="form-control error";
-        document.getElementById("errorLabel2").innerText="Digite una cuota";
+        inputSearchMonth.className="form-control error";
+        errorLabel2.innerText="Digite una cuota";
+        MsgPopUp(`Es necesario que digite una cuota`,'Atención');
     }else{
         buscarCuota(cuota);
     }
 })
 
-let btnMonto = document.getElementById("btnMonto");
 btnMonto.addEventListener("click", () => {
-    let monto = parseFloat(document.getElementById("inputSearchAmount").value);
-    document.getElementById("errorLabel2").innerText="";
-    document.getElementById("errorLabel2").className="errorLabel";
+    let num = searchAmountInput.value.replace(/[\D\s\._\-]+/g, "")
+    let monto = parseFloat(num);
+    errorLabel2.innerText="";
+    errorLabel2.className="errorLabel";
     if( isNaN(monto)){
-        document.getElementById("inputSearchAmount").className="form-control error";
-        document.getElementById("errorLabel2").innerText="Digite un monto";
+        searchAmountInput.className="form-control error";
+        errorLabel2.innerText="Digite un monto";
+        resetMenoresClass();
+        MsgPopUp(`Es necesario que digite un monto`,'Atención');
     }else{
         pagoMayor(monto);
     }
 })
 
-let btnBorrarCache = document.getElementById("btnBorrarCache");
 btnBorrarCache.addEventListener("click", () => {
     let datosLocales = new dataLocal();
     let dataEliminada = datosLocales.borrarDataLocal();
     if (dataEliminada.length !== 0){
-        document.getElementById("msgLabel").innerText="Data local eliminada exitosamente";
+        msgLabel1.innerText="Data local eliminada exitosamente";
+        MsgPopUp('Data local eliminada exitosamente','Atención', 'success');
     }else{
-        document.getElementById("msgLabel").innerText="No existen datos locales";
+        msgLabel1.innerText="No existen datos locales";
+        MsgPopUp('No existen datos locales','Atención', 'info');
     }
 })
+
+searchAmountInput.addEventListener("keyup", (event) => {
+    formatInput(event, searchAmountInput);
+})
+
+inputAmount.addEventListener("keyup", (event) => {
+    formatInput(event, inputAmount);
+})
+
+function formatInput(event, element) {
+    let num = element.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
+    const notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
+    notInputKeys.includes(event.key) ? "" : element.value = moneda.format(num);
+}
+
+function MsgPopUp(msg, title, type) {
+    Swal.fire({
+        icon: type || 'error',
+        title: title || '',
+        text: msg ||'Ha ocurrido un error',
+      })
+}
 
 window.onload = () => {
     let datosLocales = new dataLocal();
     let dataLocalCargada = datosLocales.cargarDataLocal();
     console.log(dataLocalCargada);
     if (dataLocalCargada.length !== 0){
-        document.getElementById("inputMonths").value= dataLocalCargada.numCuotaLocal;
-        document.getElementById("inputAmount").value= dataLocalCargada.montoLocal;
-        document.getElementById("inputRate").value= dataLocalCargada.tasaLocal;
+        inputMonths.value= dataLocalCargada.numCuotaLocal;
+        inputAmount.value= dataLocalCargada.montoLocal;
+        inputRate.value= dataLocalCargada.tasaLocal;
     }
 }
