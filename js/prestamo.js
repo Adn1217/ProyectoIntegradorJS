@@ -10,6 +10,7 @@ let localData =[];
 let currencyFormat = {
     style: 'currency',
     currency: 'USD',
+    minimumFractionDigits: 0
 }
 
 let moneda = new Intl.NumberFormat('en-US', currencyFormat );
@@ -55,18 +56,18 @@ function Simular (cuotas, tasa, monto) {
             const table = document.querySelector("tbody");
             table.innerHTML = `<tr id=cuota1>
                 <td>${1}</td>
-                <td>${calculoMoneda[0][0]}</td>
-                <td>${calculoMoneda[1][0]}</td>
-                <td>${calculoMoneda[2][0]}</td>
-                <td class="pagado">${calculoMoneda[3][0]}</td>
+                <td id=${calculo[0][0]}>${calculoMoneda[0][0]}</td>
+                <td id=${calculo[1][0]}>${calculoMoneda[1][0]}</td>
+                <td id=${calculo[2][0]}>${calculoMoneda[2][0]}</td>
+                <td id=${calculo[3][0]} class="pagado">${calculoMoneda[3][0]}</td>
                 </tr>`;
             for(let i=1; i<calculo[0].length; i++){
                 table.innerHTML += `<tr id=cuota${i+1}>
                 <td>${i+1}</td>
-                <td>${calculoMoneda[0][i]}</td>
-                <td>${calculoMoneda[1][i]}</td>
-                <td>${calculoMoneda[2][i]}</td>
-                <td class="pagado">${calculoMoneda[3][i]}</td>
+                <td id=${calculo[0][i]}>${calculoMoneda[0][i]}</td>
+                <td id=${calculo[1][i]}>${calculoMoneda[1][i]}</td>
+                <td id=${calculo[2][i]}>${calculoMoneda[2][i]}</td>
+                <td id=${calculo[3][i]} class="pagado">${calculoMoneda[3][i]}</td>
                 </tr>`
             }
         document.getElementById("inputAmount").className="form-control";
@@ -109,15 +110,15 @@ function pagoMayor(valorReferencia) {
     const celdas = document.getElementsByClassName("pagado");
     let menores = calculo[3].filter(cuota => parseFloat(cuota) < valorReferencia);
     Array.from(celdas).forEach(celda => {
-        menores.includes(celda.textContent) && (celda.className = "cuotaMenor");
-        // if (menores.includes(celda.textContent)){
+        menores.includes(parseFloat(celda.id)) && (celda.className = "cuotaMenor");
+        // if (menores.includes(parseFloat(celda.id))){
         //     celda.className = "cuotaMenor";
         // }
     });
 
     document.getElementById("errorLabel2").className="infoLabel";
     document.getElementById("errorLabel2").innerText="Valores de cuota menores en azul.";
-    MsgPopUp(`Valores de cuota menores que  ${valorReferencia} resaltados en azul`,'Atención', 'info');
+    MsgPopUp(`Valores de cuota menores que $${valorReferencia} resaltados en azul`,'Atención', 'info');
 }
 
 let simuleForm = document.getElementById("simuleForm");
@@ -146,12 +147,14 @@ btnBuscar.addEventListener("click", () => {
 })
 
 let btnMonto = document.getElementById("btnMonto");
+let searchAmountInput = document.getElementById("inputSearchAmount");
 btnMonto.addEventListener("click", () => {
-    let monto = parseFloat(document.getElementById("inputSearchAmount").value);
+    let num = searchAmountInput.value.replace(/[\D\s\._\-]+/g, "")
+    let monto = parseFloat(num);
     document.getElementById("errorLabel2").innerText="";
     document.getElementById("errorLabel2").className="errorLabel";
     if( isNaN(monto)){
-        document.getElementById("inputSearchAmount").className="form-control error";
+        searchAmountInput.className="form-control error";
         document.getElementById("errorLabel2").innerText="Digite un monto";
         MsgPopUp(`Es necesario que digite un monto`,'Atención');
     }else{
@@ -170,6 +173,14 @@ btnBorrarCache.addEventListener("click", () => {
         document.getElementById("msgLabel").innerText="No existen datos locales";
         MsgPopUp('No existen datos locales','Atención', 'info');
     }
+})
+
+
+searchAmountInput.addEventListener("keyup", (event) => {
+    let num = searchAmountInput.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
+    const notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'delete'];
+    // (window.getSelection().toString() !== '' || arrows.includes(event.key)) ? "" : formatInput(searchAmountInput, "en-Us");
+    notInputKeys.includes(event.key) ? "" : searchAmountInput.value = moneda.format(num);
 })
 
 function MsgPopUp(msg, title, type) {
