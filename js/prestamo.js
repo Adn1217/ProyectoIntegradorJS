@@ -44,9 +44,8 @@ function Simular (cuotas, tasa, monto) {
         valido = false;
         if (monto>0 && !isNaN(monto)){
             valido = true;
-            const dataIngresada = new dataLocal(tasa, cuotas, monto);
+            const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
             dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
-            // dataIngresada.guardarDataLocal(dataIngresada.tasaLocal, dataIngresada.numCuotaLocal, dataIngresada.montoLocal);
             const prestamo = new Prestamo(tasa, cuotas, monto);
             calculo = prestamo.calcularPrestamo();
             calculo.forEach( col => {
@@ -130,7 +129,8 @@ simuleForm.addEventListener("submit", (event) =>{
     event.preventDefault();
     let cuotas = parseInt(inputMonths.value);
     let tasa = parseFloat(inputRate.value);
-    let monto = parseFloat(inputAmount.value);
+    let num = inputAmount.value.replace(/,/g, "") //Remueve la coma.
+    let monto = parseFloat(num.substring(1)); // Remueve el símbolo de moneda.
     errorLabel1.innerText="";
     Simular(cuotas, tasa, monto);
 })
@@ -176,10 +176,18 @@ btnBorrarCache.addEventListener("click", () => {
 })
 
 searchAmountInput.addEventListener("keyup", (event) => {
-    let num = searchAmountInput.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
-    const notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace', 'delete'];
-    notInputKeys.includes(event.key) ? "" : searchAmountInput.value = moneda.format(num);
+    formatInput(event, searchAmountInput);
 })
+
+inputAmount.addEventListener("keyup", (event) => {
+    formatInput(event, inputAmount);
+})
+
+function formatInput(event, element) {
+    let num = element.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
+    const notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
+    notInputKeys.includes(event.key) ? "" : element.value = moneda.format(num);
+}
 
 function MsgPopUp(msg, title, type) {
     Swal.fire({
