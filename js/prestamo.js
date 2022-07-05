@@ -190,30 +190,30 @@ btnBorrarCache.addEventListener("click", () => {
     }
 })
 
-dolar.addEventListener('change', event => {
+dolar.addEventListener('change', ({target}) => {
     seleccionMoneda();
     searchAmountInput.value = '';
     inputAmount.value = '';
 });
 
-euro.addEventListener('change', event => {
+euro.addEventListener('change', ({target}) => {
     seleccionMoneda();
     searchAmountInput.value = '';
     inputAmount.value = '';
 });
 
-searchAmountInput.addEventListener("keyup", (event) => {
-    formatInput(event, searchAmountInput);
+searchAmountInput.addEventListener("keyup", ({key}) => {
+    formatInput(key, searchAmountInput);
 })
 
-inputAmount.addEventListener("keyup", (event) => {
-    formatInput(event, inputAmount);
+inputAmount.addEventListener("keyup", ({key}) => {
+    formatInput(key, inputAmount);
 })
 
-function formatInput(event, element) {
+function formatInput(eventKey, element) {
     let num = element.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
     let notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
-    notInputKeys.includes(event.key) ? "" : element.value = moneda.format(num);
+    notInputKeys.includes(eventKey) ? "" : element.value = moneda.format(num);
 }
 
 function MsgPopUp(msg, title, type) {
