@@ -14,10 +14,12 @@ table {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 100px;
+    width: 75%;
 }
 
 th, td {
-    min-width: 120px;
+    max-width: 120px;
+    min-width: 80px;
 }
 
 .cuotaEncontrada {
@@ -28,7 +30,7 @@ th, td {
 .errorLabel {
     color: red;
     font-weight: bold;
-    margin: 0px 0px 50px 0px;
+    margin: 0px 0px 20px 0px;
     }
 
 .infoLabel {
@@ -49,6 +51,18 @@ th, td {
     justify-content: center
 }
 
+@media screen and (max-width: 576px) {
+
+    .container {
+        flex-wrap: wrap;
+        flex-direction: column;
+        width: 75%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+}
+
 .btn{
     display: block;
 }
@@ -56,6 +70,13 @@ th, td {
 .center, #cache {
     margin-left: auto;
     margin-right: auto;
+}
+
+.center {
+    text-align: justify;
+}
+
+#cache {
     text-align: center;
 }
 
@@ -66,13 +87,36 @@ h2 {
 h1, #Resultados {
     display: block;
     text-align: center;
-    margin: 30px;
+    margin: 20px;
 }
 
 p {
+    display: inline-block;
+    padding: 0% 2%;
     width: 75%;
 }
 
-#Resultados {
-    display: block;
+#monedas {
+    display: inline-block;
+    width: 20%;
+}
+
+#descripcion {
+    margin: 5%;
+    width: 90%;
+}
+
+@media screen and (max-width: 756px) {
+
+    #descripcion {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    #monedas {
+        width: 75%;
+        text-align: justify;
+    }
+
 }

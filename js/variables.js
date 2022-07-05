@@ -10,10 +10,14 @@ let inputAmount = document.getElementById("inputAmount");
 let inputSearchMonth = document.getElementById("inputSearchMonth");
 let searchAmountInput = document.getElementById("inputSearchAmount");
 
-//-----------------BUTTOMS-----------------
+//-----------------BUTTONS-----------------
 let btnBuscar = document.getElementById("btnBuscar");
 let btnMonto = document.getElementById("btnMonto");;
 let btnBorrarCache = document.getElementById("btnBorrarCache");;
+
+//-----------------RADIO BUTTONS-----------
+let dolar = document.getElementById("dolar");
+let euro = document.getElementById("euro");
 
 //-----------------FORMS-------------------
 let simuleForm = document.getElementById("simuleForm");
