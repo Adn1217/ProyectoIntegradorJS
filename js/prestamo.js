@@ -71,6 +71,7 @@ function Simular (cuotas, tasa, monto) {
             }
             inputAmount.className="form-control";
             document.getElementById("searchFieldset").disabled = false;
+            toastMsgPopUp('','Cálculo realizado exitosamente','success',1000);
             valido = false;
         }else {
             inputAmount.className="form-control error";
@@ -194,6 +195,26 @@ function MsgPopUp(msg, title, type) {
         icon: type || 'error',
         title: title || '',
         text: msg ||'Ha ocurrido un error',
+      })
+}
+
+function toastMsgPopUp(msg, title, type, time) {
+    Swal.fire({
+        
+        // background: '#2AE300',
+        // color: 'white',
+        icon: type || 'error',
+        // iconColor: 'white',
+        position: 'top-end',
+        showConfirmButton: false,
+        title: title || 'Ha ocurrido un error',
+        text: msg ||'',
+        timer: time || 3000,
+        timerProgressBar: true,
+        toast: true,didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
       })
 }
 
