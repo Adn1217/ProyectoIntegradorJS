@@ -6,14 +6,26 @@ let calculoMoneda = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
 let localData =[];
+let moneda;
 
-let currencyFormat = {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0
+function seleccionMoneda() {
+    let monedaActual = dolar.checked ? 'en-US' : 'es-ES';
+    let currencyFormato = currencyFormat();     
+    moneda = new Intl.NumberFormat(monedaActual, currencyFormato );
+    return moneda
 }
 
-let moneda = new Intl.NumberFormat('en-US', currencyFormat );
+function currencyFormat() {
+    let seleccion = dolar.checked ? 'USD' : 'EUR';
+    let currencyFormat = {
+        style: 'currency',
+        currency: seleccion,
+        minimumFractionDigits: 0
+    }
+    return currencyFormat
+}
+
+seleccionMoneda();
 
 function Simular (cuotas, tasa, monto) {
     
@@ -43,7 +55,9 @@ function Simular (cuotas, tasa, monto) {
     if(valido){
         valido = false;
         if (monto>0 && !isNaN(monto)){
+            let moneda = seleccionMoneda(); 
             valido = true;
+            calculoMoneda = [];
             const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
             dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
             const prestamo = new Prestamo(tasa, cuotas, monto);
@@ -71,6 +85,7 @@ function Simular (cuotas, tasa, monto) {
             }
             inputAmount.className="form-control";
             document.getElementById("searchFieldset").disabled = false;
+            toastMsgPopUp('','Cálculo realizado exitosamente','success',2000);
             valido = false;
         }else {
             inputAmount.className="form-control error";
@@ -122,15 +137,15 @@ function pagoMayor(valorReferencia) {
 
     errorLabel2.className="infoLabel";
     errorLabel2.innerText="Valores de cuota menores en azul.";
-    MsgPopUp(`Valores de cuota menores que $${valorReferencia} resaltados en azul`,'Atención', 'info');
+    MsgPopUp(`Valores de cuota menores que ${moneda.format(valorReferencia)} resaltados en azul`,'Atención', 'info');
 }
 
 simuleForm.addEventListener("submit", (event) =>{
     event.preventDefault();
     let cuotas = parseInt(inputMonths.value);
     let tasa = parseFloat(inputRate.value);
-    let num = inputAmount.value.replace(/,/g, "") //Remueve la coma.
-    let monto = parseFloat(num.substring(1)); // Remueve el símbolo de moneda.
+    // let num = inputAmount.value.replace(/[^0-9\.-]+/g, "") // Quita caracteres no numéricos, manteniendo el punto.
+    let monto = inputAmount.value.replace(/[^0-9]+/g, "") // Quita caracteres no numéricos.
     errorLabel1.innerText="";
     Simular(cuotas, tasa, monto);
 })
@@ -175,6 +190,18 @@ btnBorrarCache.addEventListener("click", () => {
     }
 })
 
+dolar.addEventListener('change', event => {
+    seleccionMoneda();
+    searchAmountInput.value = '';
+    inputAmount.value = '';
+});
+
+euro.addEventListener('change', event => {
+    seleccionMoneda();
+    searchAmountInput.value = '';
+    inputAmount.value = '';
+});
+
 searchAmountInput.addEventListener("keyup", (event) => {
     formatInput(event, searchAmountInput);
 })
@@ -185,7 +212,7 @@ inputAmount.addEventListener("keyup", (event) => {
 
 function formatInput(event, element) {
     let num = element.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
-    const notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
+    let notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
     notInputKeys.includes(event.key) ? "" : element.value = moneda.format(num);
 }
 
@@ -194,6 +221,26 @@ function MsgPopUp(msg, title, type) {
         icon: type || 'error',
         title: title || '',
         text: msg ||'Ha ocurrido un error',
+      })
+}
+
+function toastMsgPopUp(msg, title, type, time) {
+    Swal.fire({
+        
+        // background: '#2AE300',
+        // color: 'white',
+        icon: type || 'error',
+        // iconColor: 'white',
+        position: 'top-end',
+        showConfirmButton: false,
+        title: title || 'Ha ocurrido un error',
+        text: msg ||'',
+        timer: time || 3000,
+        timerProgressBar: true,
+        toast: true,didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
       })
 }
 
