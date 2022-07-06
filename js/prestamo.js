@@ -66,21 +66,32 @@ function Simular (cuotas, tasa, monto) {
                 calculoMoneda.push(col.map(moneda.format))
                 })
             console.table(prestamo);
-            const table = document.querySelector("tbody");
-            table.innerHTML = `<tr id=cuota1>
+            const tableHead = document.querySelector("thead");
+            tableHead.innerHTML = 
+            `<tr class="animate__animated animate__bounce">
+                <th>#</th>
+                <th>Intereses</th>
+                <th>Cuota</th>
+                <th>Saldo</th>
+                <th>Pagado</th>
+            </tr>`;
+            const tableBody = document.querySelector("tbody");
+            tableBody.innerHTML = 
+            `<tr id=cuota1 class="animate__animated animate__bounce">
                 <td>${1}</td>
                 <td id=${calculo[0][0]}>${calculoMoneda[0][0]}</td>
                 <td id=${calculo[1][0]}>${calculoMoneda[1][0]}</td>
                 <td id=${calculo[2][0]}>${calculoMoneda[2][0]}</td>
                 <td id=${calculo[3][0]} class="pagado">${calculoMoneda[3][0]}</td>
-                </tr>`;
+            </tr>`;
             for(let i=1; i<calculo[0].length; i++){
-                table.innerHTML += `<tr id=cuota${i+1}>
-                <td>${i+1}</td>
-                <td id=${calculo[0][i]}>${calculoMoneda[0][i]}</td>
-                <td id=${calculo[1][i]}>${calculoMoneda[1][i]}</td>
-                <td id=${calculo[2][i]}>${calculoMoneda[2][i]}</td>
-                <td id=${calculo[3][i]} class="pagado">${calculoMoneda[3][i]}</td>
+                tableBody.innerHTML += 
+                `<tr id=cuota${i+1} class="animate__animated animate__bounce">
+                    <td>${i+1}</td>
+                    <td id=${calculo[0][i]}>${calculoMoneda[0][i]}</td>
+                    <td id=${calculo[1][i]}>${calculoMoneda[1][i]}</td>
+                    <td id=${calculo[2][i]}>${calculoMoneda[2][i]}</td>
+                    <td id=${calculo[3][i]} class="pagado">${calculoMoneda[3][i]}</td>
                 </tr>`
             }
             inputAmount.className="form-control";
