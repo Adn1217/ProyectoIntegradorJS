@@ -7,6 +7,10 @@ let cuotaBuscada = 0;
 let valorReferencia = 0;
 let localData =[];
 let moneda;
+const DateTime = luxon.DateTime;
+const settings = luxon.Settings;
+
+settings.defaultLocale = 'es-ES';
 
 function seleccionMoneda() {
     let monedaActual = dolar.checked ? 'en-US' : 'es-ES';
@@ -53,11 +57,16 @@ function Simular (cuotas, tasa, monto) {
     }
 
     if(valido){
+        const ahora = DateTime.now();
+        const diaSemana = ahora.toFormat('cccc');
+        const fechaAhora = ahora.toFormat("dd'/'MM'/'yyyy") // Se puede usar toLocalString(DateTime.DATE_SHORT)
+        const hora = ahora.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
         valido = false;
         if (monto>0 && !isNaN(monto)){
             let moneda = seleccionMoneda(); 
             valido = true;
             calculoMoneda = [];
+            fecha.className="";
             const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
             dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
             const prestamo = new Prestamo(tasa, cuotas, monto);
@@ -98,6 +107,9 @@ function Simular (cuotas, tasa, monto) {
             document.getElementById("searchFieldset").disabled = false;
             toastMsgPopUp('','Cálculo realizado exitosamente','success',2000);
             valido = false;
+            fecha.innerText= ["Cálculo realizado el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+            // fecha.innerText="Cálculo realizado el " + diaSemana + ' ' + fechaAhora +" a las " + hora + ".";
+            fecha.className="animate__animated animate__backInUp";
         }else {
             inputAmount.className="form-control error";
             errorLabel1.innerText="Debe ingresar un número positivo válido.";

@@ -2,6 +2,7 @@
 let msgLabel1 = document.getElementById("msgLabel");
 let errorLabel1 = document.getElementById("errorLabel");
 let errorLabel2 = document.getElementById("errorLabel2");
+let fecha = document.getElementById("date");
 
 //------------------INPUTS-----------------
 let inputMonths = document.getElementById("inputMonths");
