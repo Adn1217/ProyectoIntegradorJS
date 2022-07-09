@@ -58,10 +58,12 @@ function Simular(cuotas, tasa, monto) {
 
     if(valido){
         [tableHead.innerHTML, tableBody.innerHTML, fecha]=["","",""];
-        spinner.className="spinner-border text-primary";
+        spinner.classList.add(...["spinner-border","text-primary"]);
+        // spinner.className = "spinner-border text-primary";
         toastMsgPopUp('',"Calculando...",'info',1500);
         setTimeout(() =>{
-            spinner.className="";
+            spinner.classList.remove(...["spinner-border","text-primary"]);
+            // spinner.className="";
             calcularTabla(cuotas, tasa, monto);
         },2000);
     }
