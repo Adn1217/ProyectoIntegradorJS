@@ -170,7 +170,12 @@ simuleForm.addEventListener("submit", (event) =>{
     // let num = inputAmount.value.replace(/[^0-9\.-]+/g, "") // Quita caracteres no numéricos, manteniendo el punto.
     let monto = inputAmount.value.replace(/[^0-9]+/g, "") // Quita caracteres no numéricos.
     errorLabel1.innerText="";
-    Simular(cuotas, tasa, monto);
+    spinner.className="spinner-border text-primary";
+    toastMsgPopUp('',"Calculando...",'info',2000)
+    setTimeout(() =>{
+        spinner.className="";
+        Simular(cuotas, tasa, monto)
+    },2000);
 })
 
 btnBuscar.addEventListener("click", () => {
