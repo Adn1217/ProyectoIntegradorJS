@@ -31,7 +31,7 @@ function currencyFormat() {
 
 seleccionMoneda();
 
-function Simular (cuotas, tasa, monto) {
+function Simular(cuotas, tasa, monto) {
     
     msgLabel1.innerText="";
 
@@ -57,64 +57,75 @@ function Simular (cuotas, tasa, monto) {
     }
 
     if(valido){
-        const ahora = DateTime.now();
-        const diaSemana = ahora.toFormat('cccc');
-        const fechaAhora = ahora.toFormat("dd'/'MM'/'yyyy") // Se puede usar toLocalString(DateTime.DATE_SHORT)
-        const hora = ahora.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
-        valido = false;
-        if (monto>0 && !isNaN(monto)){
-            let moneda = seleccionMoneda(); 
-            valido = true;
-            calculoMoneda = [];
-            fecha.className="";
-            const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
-            dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
-            const prestamo = new Prestamo(tasa, cuotas, monto);
-            calculo = prestamo.calcularPrestamo();
-            calculo.forEach( col => {
-                calculoMoneda.push(col.map(moneda.format))
-                })
-            console.table(prestamo);
-            const tableHead = document.querySelector("thead");
-            tableHead.innerHTML = 
-            `<tr class="animate__animated animate__bounce">
-                <th>#</th>
-                <th>Intereses</th>
-                <th>Cuota</th>
-                <th>Saldo</th>
-                <th>Pagado</th>
-            </tr>`;
-            const tableBody = document.querySelector("tbody");
-            tableBody.innerHTML = 
-            `<tr id=cuota1 class="animate__animated animate__bounce">
-                <td>${1}</td>
-                <td id=${calculo[0][0]}>${calculoMoneda[0][0]}</td>
-                <td id=${calculo[1][0]}>${calculoMoneda[1][0]}</td>
-                <td id=${calculo[2][0]}>${calculoMoneda[2][0]}</td>
-                <td id=${calculo[3][0]} class="pagado">${calculoMoneda[3][0]}</td>
-            </tr>`;
-            for(let i=1; i<calculo[0].length; i++){
-                tableBody.innerHTML += 
-                `<tr id=cuota${i+1} class="animate__animated animate__bounce">
-                    <td>${i+1}</td>
-                    <td id=${calculo[0][i]}>${calculoMoneda[0][i]}</td>
-                    <td id=${calculo[1][i]}>${calculoMoneda[1][i]}</td>
-                    <td id=${calculo[2][i]}>${calculoMoneda[2][i]}</td>
-                    <td id=${calculo[3][i]} class="pagado">${calculoMoneda[3][i]}</td>
-                </tr>`
-            }
-            inputAmount.className="form-control";
-            document.getElementById("searchFieldset").disabled = false;
-            toastMsgPopUp('','Cálculo realizado exitosamente','success',2000);
-            valido = false;
-            fecha.innerText= ["Cálculo realizado el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
-            // fecha.innerText="Cálculo realizado el " + diaSemana + ' ' + fechaAhora +" a las " + hora + ".";
-            fecha.className="animate__animated animate__backInUp";
-        }else {
-            inputAmount.className="form-control error";
-            errorLabel1.innerText="Debe ingresar un número positivo válido.";
-            MsgPopUp('Debe ingresar un número positivo válido');
+        [tableHead.innerHTML, tableBody.innerHTML, fecha]=["","",""];
+        spinner.classList.add(...["spinner-border","text-primary"]);
+        // spinner.className = "spinner-border text-primary";
+        toastMsgPopUp('',"Calculando...",'info',1500);
+        setTimeout(() =>{
+            spinner.classList.remove(...["spinner-border","text-primary"]);
+            // spinner.className="";
+            calcularTabla(cuotas, tasa, monto);
+        },2000);
+    }
+}
+
+function calcularTabla(cuotas, tasa, monto){
+
+    const ahora = DateTime.now();
+    const diaSemana = ahora.toFormat('cccc');
+    const fechaAhora = ahora.toFormat("dd'/'MM'/'yyyy") // Se puede usar toLocalString(DateTime.DATE_SHORT)
+    const hora = ahora.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+    valido = false;
+    if (monto>0 && !isNaN(monto)){
+        let moneda = seleccionMoneda(); 
+        valido = true;
+        calculoMoneda = [];
+        fecha.className="";
+        const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
+        dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
+        const prestamo = new Prestamo(tasa, cuotas, monto);
+        calculo = prestamo.calcularPrestamo();
+        calculo.forEach( col => {
+            calculoMoneda.push(col.map(moneda.format))
+            })
+        console.table(prestamo);
+        tableHead.innerHTML = 
+        `<tr class="animate__animated animate__bounce">
+            <th>#</th>
+            <th>Intereses</th>
+            <th>Cuota</th>
+            <th>Saldo</th>
+            <th>Pagado</th>
+        </tr>`;
+        tableBody.innerHTML = 
+        `<tr id=cuota1 class="animate__animated animate__bounce">
+            <td>${1}</td>
+            <td id=${calculo[0][0]}>${calculoMoneda[0][0]}</td>
+            <td id=${calculo[1][0]}>${calculoMoneda[1][0]}</td>
+            <td id=${calculo[2][0]}>${calculoMoneda[2][0]}</td>
+            <td id=${calculo[3][0]} class="pagado">${calculoMoneda[3][0]}</td>
+        </tr>`;
+        for(let i=1; i<calculo[0].length; i++){
+            tableBody.innerHTML += 
+            `<tr id=cuota${i+1} class="animate__animated animate__bounce">
+                <td>${i+1}</td>
+                <td id=${calculo[0][i]}>${calculoMoneda[0][i]}</td>
+                <td id=${calculo[1][i]}>${calculoMoneda[1][i]}</td>
+                <td id=${calculo[2][i]}>${calculoMoneda[2][i]}</td>
+                <td id=${calculo[3][i]} class="pagado">${calculoMoneda[3][i]}</td>
+            </tr>`
         }
+        inputAmount.className="form-control";
+        document.getElementById("searchFieldset").disabled = false;
+        toastMsgPopUp('','Cálculo realizado exitosamente','success',2000);
+        valido = false;
+        fecha.innerText= ["Cálculo realizado el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+        // fecha.innerText="Cálculo realizado el " + diaSemana + ' ' + fechaAhora +" a las " + hora + ".";
+        fecha.className="animate__animated animate__backInUp";
+    }else {
+        inputAmount.className="form-control error";
+        errorLabel1.innerText="Debe ingresar un número positivo válido.";
+        MsgPopUp('Debe ingresar un número positivo válido');
     }
 }
 
@@ -170,7 +181,7 @@ simuleForm.addEventListener("submit", (event) =>{
     // let num = inputAmount.value.replace(/[^0-9\.-]+/g, "") // Quita caracteres no numéricos, manteniendo el punto.
     let monto = inputAmount.value.replace(/[^0-9]+/g, "") // Quita caracteres no numéricos.
     errorLabel1.innerText="";
-    Simular(cuotas, tasa, monto);
+    Simular(cuotas, tasa, monto)
 })
 
 btnBuscar.addEventListener("click", () => {

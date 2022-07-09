@@ -27,10 +27,10 @@ class Prestamo {
             saldoi -= (cuotai-interesi);
             pagadoi += cuotai;
 
-            console.log("Cuota ",i,": ",cuotai.toFixed(3));
-            console.log("Interes ",i,": ",interesi.toFixed(3));
-            console.log("Saldo ",i,": ",saldoi.toFixed(3));
-            console.log("Pagado: ", pagadoi.toFixed(3));
+            // console.log("Cuota ",i,": ",cuotai.toFixed(3));
+            // console.log("Interes ",i,": ",interesi.toFixed(3));
+            // console.log("Saldo ",i,": ",saldoi.toFixed(3));
+            // console.log("Pagado: ", pagadoi.toFixed(3));
 
             this.interesCuota.push(interesi);
             this.numCuota.push(i);

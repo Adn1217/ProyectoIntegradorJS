@@ -22,3 +22,10 @@ let euro = document.getElementById("euro");
 
 //-----------------FORMS-------------------
 let simuleForm = document.getElementById("simuleForm");
+
+//-----------------DIVS--------------------
+let spinner = document.getElementById("spinner");
+
+//-----------------TABLE-------------------
+const tableHead = document.querySelector("thead");
+let tableBody = document.querySelector("tbody");
