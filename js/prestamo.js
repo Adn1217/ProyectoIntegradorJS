@@ -57,7 +57,7 @@ function Simular(cuotas, tasa, monto) {
     }
 
     if(valido){
-        [tableHead.innerHTML, tableBody.innerHTML, fecha]=["","",""];
+        [tableHead.innerHTML, tableBody.innerHTML, fecha.innerText]=["","",""];
         spinner.classList.add(...["spinner-border","text-primary"]);
         // spinner.className = "spinner-border text-primary";
         toastMsgPopUp('',"Calculando...",'info',1500);
@@ -81,10 +81,13 @@ function calcularTabla(cuotas, tasa, monto){
         valido = true;
         calculoMoneda = [];
         fecha.className="";
-        const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
-        dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
+        const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value, "datosSimulacion");
+        // dataIngresada.guardarDataLocal(...Object.values(dataIngresada),"datosSimulacion");
+        dataIngresada.guardarDataLocal();
         const prestamo = new Prestamo(tasa, cuotas, monto);
         calculo = prestamo.calcularPrestamo();
+        // let dataLocalStr = JSON.stringify(prestamo);
+        // localStorage.setItem("dataLocalPrestamo", dataLocalStr);
         calculo.forEach( col => {
             calculoMoneda.push(col.map(moneda.format))
             })
@@ -130,6 +133,9 @@ function calcularTabla(cuotas, tasa, monto){
 }
 
 function buscarCuota(cuotaBuscada) {
+
+    let buscadoAntes = document.getElementsByClassName("cuotaEncontrada");
+    Array.from(buscadoAntes).forEach( celda => celda.className = "");
 
     inputSearchMonth.className="form-control";
     inputSearchMonth.value = cuotaBuscada;
@@ -214,7 +220,7 @@ btnMonto.addEventListener("click", () => {
 
 btnBorrarCache.addEventListener("click", () => {
     let datosLocales = new dataLocal();
-    let dataEliminada = datosLocales.borrarDataLocal();
+    let dataEliminada = datosLocales.borrarDataLocal("datosSimulacion");
     if (dataEliminada.length !== 0){
         msgLabel1.innerText="Data local eliminada exitosamente";
         MsgPopUp('Data local eliminada exitosamente','Atención', 'success');
@@ -280,7 +286,7 @@ function toastMsgPopUp(msg, title, type, time) {
 
 window.onload = () => {
     let datosLocales = new dataLocal();
-    let dataLocalCargada = datosLocales.cargarDataLocal();
+    let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
     console.log(dataLocalCargada);
     if (dataLocalCargada.length !== 0){
         inputMonths.value= dataLocalCargada.numCuotaLocal;
