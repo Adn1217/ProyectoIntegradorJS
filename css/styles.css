@@ -10,7 +10,7 @@ label {
     margin: 10px;
 }
 
-table {
+table, .table {
     margin-left: auto;
     margin-right: auto;
     width: 75%;
@@ -33,6 +33,10 @@ th, td {
     font-weight: bold;
 }
 
+.table-striped>tbody>tr.cuotaEncontrada:nth-of-type(odd)>*{
+    color: green;
+}
+
 .errorLabel {
     color: red;
     font-weight: bold;
@@ -50,6 +54,14 @@ th, td {
 .cuotaMenor {
     color: blue;
     font-weight: bold;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>td.cuotaMenor{
+    color: blue;
+}
+
+.table-striped>tbody>tr:hover>td.cuotaMenor{
+    color: blue;
 }
 
 .container {

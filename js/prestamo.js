@@ -134,6 +134,9 @@ function calcularTabla(cuotas, tasa, monto){
 
 function buscarCuota(cuotaBuscada) {
 
+    let buscadoAntes = document.getElementsByClassName("cuotaEncontrada");
+    Array.from(buscadoAntes).forEach( celda => celda.className = "");
+
     inputSearchMonth.className="form-control";
     inputSearchMonth.value = cuotaBuscada;
     msgLabel1.innerText="";
