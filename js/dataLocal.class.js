@@ -17,8 +17,8 @@ class dataLocal {
     cargarDataLocal(){
         let localData = JSON.parse(localStorage.getItem("datosSimulacion")) || [];
         // localData = localData.length ? JSON.parse(localData) : [];
-        localData && console.log("Data local cargada exitosamente")
-        localData ??  console.log("No existen datos locales");
+        localData.length ?? console.log("Data local cargada exitosamente");
+        localData.length==0 && console.log("No existen datos locales");
         // let localData = [];
         // if (localStorage.getItem("datosSimulacion")){
         //     localData = JSON.parse(localStorage.getItem("datosSimulacion"));
@@ -31,8 +31,9 @@ class dataLocal {
 
     borrarDataLocal(){
         let localData = JSON.parse(localStorage.getItem("datosSimulacion")) || [];
-        localStorage.removeItem("datosSimulacion") && console.log("Data local eliminada exitosamente: ", JSON.stringify(localData))
-        localData.length ?? console.log("No existen datos locales");
+        localData.length==0 && console.log("No existen datos locales");
+        localData.length ?? localStorage.removeItem("datosSimulacion");
+        localData.length ?? (console.log("Data local eliminada exitosamente: ", JSON.stringify(localData)) && localStorage.removeItem("datosSimulacion"));
         // let localData = [];
         // if (localStorage.getItem("datosSimulacion")){
         //     localData = JSON.parse(localStorage.getItem("datosSimulacion"));
