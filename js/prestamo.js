@@ -81,8 +81,9 @@ function calcularTabla(cuotas, tasa, monto){
         valido = true;
         calculoMoneda = [];
         fecha.className="";
-        const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value);
-        dataIngresada.guardarDataLocal(...Object.values(dataIngresada));
+        const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value, "datosSimulacion");
+        // dataIngresada.guardarDataLocal(...Object.values(dataIngresada),"datosSimulacion");
+        dataIngresada.guardarDataLocal();
         const prestamo = new Prestamo(tasa, cuotas, monto);
         calculo = prestamo.calcularPrestamo();
         calculo.forEach( col => {
@@ -214,7 +215,7 @@ btnMonto.addEventListener("click", () => {
 
 btnBorrarCache.addEventListener("click", () => {
     let datosLocales = new dataLocal();
-    let dataEliminada = datosLocales.borrarDataLocal();
+    let dataEliminada = datosLocales.borrarDataLocal("datosSimulacion");
     if (dataEliminada.length !== 0){
         msgLabel1.innerText="Data local eliminada exitosamente";
         MsgPopUp('Data local eliminada exitosamente','Atención', 'success');
@@ -280,7 +281,7 @@ function toastMsgPopUp(msg, title, type, time) {
 
 window.onload = () => {
     let datosLocales = new dataLocal();
-    let dataLocalCargada = datosLocales.cargarDataLocal();
+    let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
     console.log(dataLocalCargada);
     if (dataLocalCargada.length !== 0){
         inputMonths.value= dataLocalCargada.numCuotaLocal;
