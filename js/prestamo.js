@@ -57,7 +57,7 @@ function Simular(cuotas, tasa, monto) {
     }
 
     if(valido){
-        [tableHead.innerHTML, tableBody.innerHTML, fecha]=["","",""];
+        [tableHead.innerHTML, tableBody.innerHTML, fecha.innerText]=["","",""];
         spinner.classList.add(...["spinner-border","text-primary"]);
         // spinner.className = "spinner-border text-primary";
         toastMsgPopUp('',"Calculando...",'info',1500);
@@ -86,6 +86,8 @@ function calcularTabla(cuotas, tasa, monto){
         dataIngresada.guardarDataLocal();
         const prestamo = new Prestamo(tasa, cuotas, monto);
         calculo = prestamo.calcularPrestamo();
+        // let dataLocalStr = JSON.stringify(prestamo);
+        // localStorage.setItem("dataLocalPrestamo", dataLocalStr);
         calculo.forEach( col => {
             calculoMoneda.push(col.map(moneda.format))
             })
