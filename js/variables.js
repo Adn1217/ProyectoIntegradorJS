@@ -15,6 +15,7 @@ let searchAmountInput = document.getElementById("inputSearchAmount");
 let btnBuscar = document.getElementById("btnBuscar");
 let btnMonto = document.getElementById("btnMonto");;
 let btnBorrarCache = document.getElementById("btnBorrarCache");;
+let btnFetch = document.getElementById("btnFetch");;
 
 //-----------------RADIO BUTTONS-----------
 let dolar = document.getElementById("dolar");

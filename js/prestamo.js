@@ -69,12 +69,17 @@ function Simular(cuotas, tasa, monto) {
     }
 }
 
-function calcularTabla(cuotas, tasa, monto){
+function calcularFecha(){
 
     const ahora = DateTime.now();
     const diaSemana = ahora.toFormat('cccc');
     const fechaAhora = ahora.toFormat("dd'/'MM'/'yyyy") // Se puede usar toLocalString(DateTime.DATE_SHORT)
     const hora = ahora.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+    return [ahora, diaSemana, fechaAhora, hora];
+}
+
+function calcularTabla(cuotas, tasa, monto){
+    [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
     valido = false;
     if (monto>0 && !isNaN(monto)){
         let moneda = seleccionMoneda(); 
@@ -256,6 +261,96 @@ function formatInput(eventKey, element) {
     notInputKeys.includes(eventKey) ? "" : element.value = moneda.format(num);
 }
 
+btnFetch.addEventListener("click", async () => {
+    let confirmationProm = await ConfMsgPopUp('Se cargará información fija de la API ¿Desea continuar?','Atención');
+    if (confirmationProm.isConfirmed) {
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+        fecha.innerText = '';
+        toastMsgPopUp('',"Recibiendo información...",'info',1500);
+        spinner.classList.add(...["spinner-border","text-primary"]);
+        // spinner.className = "spinner-border text-primary";
+        setTimeout(() =>{
+            spinner.classList.remove(...["spinner-border","text-primary"]);
+            toastMsgPopUp('', 'Data cargada exitosamente', 'success', 1500)
+            // spinner.className="";
+            let respuesta = doFetch(1);
+            console.log(respuesta);
+        },2000);
+    }
+})
+
+function doFetch(poke){
+    // fetch(`https://pokeapi.co/api/v2/pokemon/${poke}`)
+    let resp = fetch('http://127.0.0.1:5500/js/datos.json')
+        .then((response) => response.json())
+        .then((data) => {
+            let dataMoneda = {};
+            calculo = [];
+            [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
+            Object.entries(data).forEach((key) => {
+                Array.isArray(key[1]) ?? (dataMoneda[key[0]] = key[1]);
+                Array.isArray(key[1]) && (dataMoneda[key[0]] = key[1]?.map((ele) =>moneda.format(ele.toString())));
+            })
+            // console.log(data)
+            console.log("Se carga exitosamente la siguiente información:",dataMoneda);
+            tableHead.innerHTML = 
+            `<tr class="animate__animated animate__bounce">
+                <th>#</th>
+                <th>Intereses</th>
+                <th>Cuota</th>
+                <th>Saldo</th>
+                <th>Pagado</th>
+            </tr>`;
+            tableBody.innerHTML = 
+            `<tr id=cuota1 class="animate__animated animate__bounce">
+                <td>${1}</td>
+                <td id=${data["interesCuota"][0]}>${dataMoneda["interesCuota"][0]}</td>
+                <td id=${data["cuota"][0]}>${dataMoneda["cuota"][0]}</td>
+                <td id=${data["saldo"][0]}>${dataMoneda["saldo"][0]}</td>
+                <td id=${data["pagado"][0]} class="pagado">${dataMoneda["pagado"][0]}</td>
+            </tr>`;
+            for(let i=1; i<data["interesCuota"].length; i++){
+                tableBody.innerHTML += 
+                `<tr id=cuota${i+1} class="animate__animated animate__bounce">
+                    <td>${i+1}</td>
+                    <td id=${data["interesCuota"][i]}>${dataMoneda["interesCuota"][i]}</td>
+                    <td id=${data["cuota"][i]}>${dataMoneda["cuota"][i]}</td>
+                    <td id=${data["saldo"][i]}>${dataMoneda["saldo"][i]}</td>
+                    <td id=${data["pagado"][i]} class="pagado">${dataMoneda["pagado"][i]}</td>
+                </tr>`
+            }
+            inputMonths.className = inputRate.className = inputAmount.className = ("form-control actualizado");
+            [inputMonths.value, inputRate.value, inputAmount.value] = [data["numCuotas"], data["tasa"], moneda.format(data["monto"])];
+            fecha.innerText= ["Carga realizada el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+            // fecha.innerText="Cálculo realizado el " + diaSemana + ' ' + fechaAhora +" a las " + hora + ".";
+            fecha.className="animate__animated animate__backInUp";
+            return [data, dataMoneda];
+        })
+}
+
+function ConfMsgPopUp(msg, title, confMsg) {
+    return Swal.fire({
+        title: title || '¿Está seguro?',
+        text: msg || "Se sobreescribirá la información",
+        icon: 'warning',
+        showCancelButton: true,
+        // confirmButtonColor: '#3085d6',
+        // cancelButtonColor: '#d33',
+        confirmButtonText: confMsg || 'Aceptar'
+      })/*.then((result) => {
+        if (result.isConfirmed) {
+        //   Swal.fire(
+        //     'Deleted!',
+        //     'Your file has been deleted.',
+        //     'success'
+        //   )
+            return true;
+        }else{
+            return false;
+        }
+      })*/
+}
 function MsgPopUp(msg, title, type) {
     Swal.fire({
         icon: type || 'error',
