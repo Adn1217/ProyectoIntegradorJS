@@ -29,7 +29,21 @@ function currencyFormat() {
     return currencyFormat
 }
 
+function initTooltips(){
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    let tooltipList = tooltipTriggerList.map(
+        function(tooltipTriggerEl){
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                animation: true, 
+                delay: 0, 
+                placement: 'top'
+            })
+        })
+    return tooltipList;
+}
+
 seleccionMoneda();
+initTooltips();
 
 function Simular(cuotas, tasa, monto) {
     
@@ -269,64 +283,70 @@ btnFetch.addEventListener("click", async () => {
         fecha.innerText = '';
         toastMsgPopUp('',"Recibiendo información...",'info',1500);
         spinner.classList.add(...["spinner-border","text-primary"]);
-        // spinner.className = "spinner-border text-primary";
-        setTimeout(() =>{
+        setTimeout( async () =>{
             spinner.classList.remove(...["spinner-border","text-primary"]);
-            toastMsgPopUp('', 'Data cargada exitosamente', 'success', 1500)
-            // spinner.className="";
-            let respuesta = doFetch(1);
-            console.log(respuesta);
+            let respuesta = await doFetch(1);
+            respuesta=='error' ? MsgPopUp('Se ha presentado error en el servicio','Atención','error') : [data, dataMoneda] = mostrarDataFetch(respuesta);
+            respuesta=='error' || toastMsgPopUp('', 'Data cargada exitosamente', 'success', 1500)
         },2000);
     }
 })
 
-function doFetch(poke){
+async function doFetch(poke){
+    try{
     // fetch(`https://pokeapi.co/api/v2/pokemon/${poke}`)
-    let resp = fetch('http://127.0.0.1:5500/js/datos.json')
-        .then((response) => response.json())
-        .then((data) => {
-            let dataMoneda = {};
-            calculo = [];
-            [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
-            Object.entries(data).forEach((key) => {
-                Array.isArray(key[1]) ?? (dataMoneda[key[0]] = key[1]);
-                Array.isArray(key[1]) && (dataMoneda[key[0]] = key[1]?.map((ele) =>moneda.format(ele.toString())));
-            })
-            // console.log(data)
-            console.log("Se carga exitosamente la siguiente información:",dataMoneda);
-            tableHead.innerHTML = 
-            `<tr class="animate__animated animate__bounce">
-                <th>#</th>
-                <th>Intereses</th>
-                <th>Cuota</th>
-                <th>Saldo</th>
-                <th>Pagado</th>
-            </tr>`;
-            tableBody.innerHTML = 
-            `<tr id=cuota1 class="animate__animated animate__bounce">
-                <td>${1}</td>
-                <td id=${data["interesCuota"][0]}>${dataMoneda["interesCuota"][0]}</td>
-                <td id=${data["cuota"][0]}>${dataMoneda["cuota"][0]}</td>
-                <td id=${data["saldo"][0]}>${dataMoneda["saldo"][0]}</td>
-                <td id=${data["pagado"][0]} class="pagado">${dataMoneda["pagado"][0]}</td>
-            </tr>`;
-            for(let i=1; i<data["interesCuota"].length; i++){
-                tableBody.innerHTML += 
-                `<tr id=cuota${i+1} class="animate__animated animate__bounce">
-                    <td>${i+1}</td>
-                    <td id=${data["interesCuota"][i]}>${dataMoneda["interesCuota"][i]}</td>
-                    <td id=${data["cuota"][i]}>${dataMoneda["cuota"][i]}</td>
-                    <td id=${data["saldo"][i]}>${dataMoneda["saldo"][i]}</td>
-                    <td id=${data["pagado"][i]} class="pagado">${dataMoneda["pagado"][i]}</td>
-                </tr>`
-            }
-            inputMonths.className = inputRate.className = inputAmount.className = ("form-control actualizado");
-            [inputMonths.value, inputRate.value, inputAmount.value] = [data["numCuotas"], data["tasa"], moneda.format(data["monto"])];
-            fecha.innerText= ["Carga realizada el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
-            // fecha.innerText="Cálculo realizado el " + diaSemana + ' ' + fechaAhora +" a las " + hora + ".";
-            fecha.className="animate__animated animate__backInUp";
-            return [data, dataMoneda];
-        })
+        let resp = await fetch('js/datos.json')
+        let data = await resp.json()
+        return data;
+    }catch(error){
+        console.log('Ha ocurrido el siguiente error:', error.message)
+        return 'error'
+    }
+}
+
+function mostrarDataFetch(data){
+
+    let dataMoneda = {};
+    calculo = [];
+    [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
+    Object.entries(data).forEach((key) => {
+        Array.isArray(key[1]) ?? (dataMoneda[key[0]] = key[1]);
+        Array.isArray(key[1]) && (dataMoneda[key[0]] = key[1]?.map((ele) =>moneda.format(ele.toString())));
+    })
+    // console.log(data)
+    console.log("Se carga exitosamente la siguiente información:",dataMoneda);
+    tableHead.innerHTML = 
+    `<tr class="animate__animated animate__bounce">
+        <th>#</th>
+        <th>Intereses</th>
+        <th>Cuota</th>
+        <th>Saldo</th>
+        <th>Pagado</th>
+    </tr>`;
+    tableBody.innerHTML = 
+    `<tr id=cuota1 class="animate__animated animate__bounce">
+        <td>${1}</td>
+        <td id=${data["interesCuota"][0]}>${dataMoneda["interesCuota"][0]}</td>
+        <td id=${data["cuota"][0]}>${dataMoneda["cuota"][0]}</td>
+        <td id=${data["saldo"][0]}>${dataMoneda["saldo"][0]}</td>
+        <td id=${data["pagado"][0]} class="pagado">${dataMoneda["pagado"][0]}</td>
+    </tr>`;
+    for(let i=1; i<data["interesCuota"].length; i++){
+        tableBody.innerHTML += 
+        `<tr id=cuota${i+1} class="animate__animated animate__bounce">
+            <td>${i+1}</td>
+            <td id=${data["interesCuota"][i]}>${dataMoneda["interesCuota"][i]}</td>
+            <td id=${data["cuota"][i]}>${dataMoneda["cuota"][i]}</td>
+            <td id=${data["saldo"][i]}>${dataMoneda["saldo"][i]}</td>
+            <td id=${data["pagado"][i]} class="pagado">${dataMoneda["pagado"][i]}</td>
+        </tr>`
+    }
+    inputMonths.className = inputRate.className = inputAmount.className = ("form-control actualizado");
+    [inputMonths.value, inputRate.value, inputAmount.value] = [data["numCuotas"], data["tasa"], moneda.format(data["monto"])];
+    fecha.innerText= ["Carga realizada el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+    // fecha.innerText="Cálculo realizado el " + diaSemana + ' ' + fechaAhora +" a las " + hora + ".";
+    fecha.className="animate__animated animate__backInUp";
+    return [data, dataMoneda];
 }
 
 function ConfMsgPopUp(msg, title, confMsg) {
