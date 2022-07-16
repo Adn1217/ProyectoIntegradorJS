@@ -15,9 +15,9 @@ settings.defaultLocale = 'es-ES';
 seleccionMoneda();
 initTooltips();
 addRadioEvents();
-asyncDoFetch();
+exchangeFetch();
 setInterval( () => {
-    asyncDoFetch()
+    exchangeFetch()
 }
 , 60000)
 
@@ -422,7 +422,7 @@ window.onload = () => {
     }
 }
 
-async function asyncDoFetch(){
+async function exchangeFetch(){
     [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
     fechaCR.innerText = "";
     fechaCR.className = "";
