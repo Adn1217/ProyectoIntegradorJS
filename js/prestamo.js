@@ -416,3 +416,21 @@ window.onload = () => {
         inputRate.value= dataLocalCargada.tasaLocal;
     }
 }
+doExchangeFetch();
+
+function doExchangeFetch(){
+    let myHeaders = new Headers();
+    myHeaders.append("apikey", "OiGu8pOTeio3YI2aGHkfeFEw3qf8Ypim");
+
+    let requestOptions = {
+    method: 'GET',
+    redirect: 'follow',
+    headers: myHeaders
+    };
+
+    // fetch("https://api.apilayer.com/exchangerates_data/convert?to=COP&from=USD&amount=1", requestOptions)
+    fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=USD%2CEUR&base=COP", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
