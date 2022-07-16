@@ -12,6 +12,15 @@ const settings = luxon.Settings;
 
 settings.defaultLocale = 'es-ES';
 
+seleccionMoneda();
+initTooltips();
+addRadioEvents();
+asyncDoFetch();
+setInterval( () => {
+    asyncDoFetch()
+}
+, 60000)
+
 function seleccionMoneda() {
     let monedaActual = dolar.checked ? 'en-US' : 'es-ES';
     let currencyFormato = currencyFormat();     
@@ -41,10 +50,6 @@ function initTooltips(){
         })
     return tooltipList;
 }
-
-seleccionMoneda();
-initTooltips();
-addRadioEvents();
 
 function Simular(cuotas, tasa, monto) {
     
@@ -416,9 +421,29 @@ window.onload = () => {
         inputRate.value= dataLocalCargada.tasaLocal;
     }
 }
-doExchangeFetch();
 
-function doExchangeFetch(){
+async function asyncDoFetch(){
+    [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
+    fechaCR.innerText = "";
+    fechaCR.className = "";
+    currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
+    try{
+        let rates = await doExchangeFetch()
+        let ratesJSON = await JSON.parse(rates);
+        currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
+        dolarInput.value = "1 USD";
+        euroInput.value = ratesJSON.rates.EUR.toFixed(2) + " EUR";
+        pesoInput.value = ratesJSON.rates.COP.toFixed(2) + " COP"
+        console.log(ratesJSON);
+        fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+        fechaCR.className = "animate__animated animate__flash";
+    }catch(error) {
+        console.error("Se presentó el siguiente error consumiendo el servicio:", error)
+    }
+
+}
+
+async function doExchangeFetch(){
     let myHeaders = new Headers();
     myHeaders.append("apikey", "OiGu8pOTeio3YI2aGHkfeFEw3qf8Ypim");
 
@@ -429,8 +454,7 @@ function doExchangeFetch(){
     };
 
     // fetch("https://api.apilayer.com/exchangerates_data/convert?to=COP&from=USD&amount=1", requestOptions)
-    fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=USD%2CEUR&base=COP", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
+    let resp = await fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=COP%2CEUR&base=USD", requestOptions);
+    let respStr = await resp.text();
+    return respStr;
 }

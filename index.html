@@ -20,7 +20,7 @@
 <body>
   <h1> Simulador de Crédito </h1>
   <div id="descripcion">
-    <p class="center">Este simulador permite el cálculo de las cuotas a tasa constante, así como el acumulado pagado total, los intereses pagados y el monto adeudado por cuota de un crédito.</p> 
+    <p class="center justify">Este simulador permite el cálculo de las cuotas a tasa constante, así como el acumulado pagado total, los intereses pagados y el monto adeudado por cuota de un crédito.</p> 
     <div class="container-md" id="monedas">
       <p>Seleccione moneda:</p>
       <div class="form-check">
@@ -37,7 +37,7 @@
       </div>
     </div>
   </div>
-  <div id="cache">
+  <div id="cache" class="center">
     <button id="btnBorrarCache" type="button" class="btn btn-secondary mb-3 center">Borrar caché</button>
     <label id="msgLabel"></label>
   </div>
@@ -74,8 +74,22 @@
       </form>
     </div>
   </div>
-  <div id="Fetch">
-    <button id="btnFetch" type="button" class="btn btn-primary mb-3" data-toggle="tooltip" data-placement="top" title="Realiza fetch" >Cargar</button>
+  <div id="currencyRates" class ="center">
+      <div>
+        <div>
+          <p>Relación de monedas:</p>
+        </div>
+        <input type="text" id="dolarActual" disabled> =
+        <input type="text" id="euroActual" disabled> =
+        <input type="text" id="pesoActual" disabled>
+      </div>
+      <div id="currencySpinner" role="status">
+      <!-- <span class="sr-only"></span> -->
+      </div>
+      <label id="currencyDate"></label>
+  </div>
+  <div id="Fetch" class = "center">
+    <button id="btnFetch" type="button" class="btn btn-primary mb-3 center" data-toggle="tooltip" data-placement="top" title="Realiza fetch" >Cargar</button>
   </div>
   <h2 id="Resultados">Resultados</h2>
   <div id="spinner" role="status">
