@@ -20,7 +20,7 @@
 <body>
   <h1> Simulador de Crédito </h1>
   <div id="descripcion">
-    <p class="center">Este simulador permite el cálculo de las cuotas a tasa constante, así como el acumulado pagado total, los intereses pagados y el monto adeudado por cuota.</p> 
+    <p class="center">Este simulador permite el cálculo de las cuotas a tasa constante, así como el acumulado pagado total, los intereses pagados y el monto adeudado por cuota de un crédito.</p> 
     <div class="container-md" id="monedas">
       <p>Seleccione moneda:</p>
       <div class="form-check">
@@ -46,7 +46,7 @@
     <div class="container-fluid">
       <h2> Simulador</h2>
       <form id="simuleForm" class="row g-3">
-        <div class="col-9">
+        <div>
           <label for="inputMonths">Plazo</label>
           <input type="text" class="form-control" id="inputMonths" placeholder="Ingrese plazo en meses">
           <label for="inputRate">Tasa mensual</label>
@@ -61,8 +61,8 @@
     <div class="container-fluid">
       <h2>Buscador</h2>
       <form class="row g-3">
-        <fieldset id="searchFieldset" disabled>
-          <div class="col-9">
+        <fieldset id="searchFieldset"  disabled>
+          <div>
             <label for="inputSearchMonth">Cuota</label>
             <input type="text" class="form-control" id="inputSearchMonth" placeholder="Ingrese cuota a buscar">
             <button id="btnBuscar" type="button" class="btn btn-primary mb-3">Buscar</button>

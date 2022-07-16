@@ -23,6 +23,7 @@ let euro = document.getElementById("euro");
 
 //-----------------FORMS-------------------
 let simuleForm = document.getElementById("simuleForm");
+let searchForm = document.getElementById("searchFieldset");
 
 //-----------------DIVS--------------------
 let spinner = document.getElementById("spinner");
