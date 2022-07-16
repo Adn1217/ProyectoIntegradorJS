@@ -20,7 +20,7 @@ function seleccionMoneda() {
 }
 
 function currencyFormat() {
-    let seleccion = dolar.checked ? 'USD' : 'EUR';
+    let seleccion = dolar.checked ? 'USD' : euro.checked ? 'EUR' : 'COP';
     let currencyFormat = {
         style: 'currency',
         currency: seleccion,
@@ -44,6 +44,7 @@ function initTooltips(){
 
 seleccionMoneda();
 initTooltips();
+addRadioEvents();
 
 function Simular(cuotas, tasa, monto) {
     
@@ -165,7 +166,6 @@ function buscarCuota(cuotaBuscada) {
         errorLabel2.innerText="Debe ingresar un número mayor a cero.";
         MsgPopUp('Debe ingresar un número mayor a cero');
     }else{
-        console.log(calculo[4]?.some((cuota) => cuota === cuotaBuscada)|| document.getElementById(`cuota${cuotaBuscada}`))
         if(calculo[4]?.some((cuota) => cuota === cuotaBuscada) || document.getElementById(`cuota${cuotaBuscada}`)){
             const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
             cuotaEncontrada.className = "cuotaEncontrada";
@@ -251,17 +251,21 @@ btnBorrarCache.addEventListener("click", () => {
     }
 })
 
-dolar.addEventListener('change', ({target}) => {
-    seleccionMoneda();
-    searchAmountInput.value = '';
-    inputAmount.value = '';
-});
+function addRadioEvents(){
+    radioButtons.forEach((radio) => {
+        radio.addEventListener('change', ({target}) => {
+            seleccionMoneda();
+            searchAmountInput.value = '';
+            inputAmount.value = '';
+        });
+    })
+}
 
-euro.addEventListener('change', ({target}) => {
-    seleccionMoneda();
-    searchAmountInput.value = '';
-    inputAmount.value = '';
-});
+// euro.addEventListener('change', ({target}) => {
+//     seleccionMoneda();
+//     searchAmountInput.value = '';
+//     inputAmount.value = '';
+// });
 
 searchAmountInput.addEventListener("keyup", ({key}) => {
     formatInput(key, searchAmountInput);
