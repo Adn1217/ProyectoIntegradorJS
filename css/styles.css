@@ -70,7 +70,14 @@ th, td {
 
 .container {
     display: flex;
-    justify-content: center
+    /* justify-content: center; */
+    justify-content:space-around;
+    width: 90%;
+    max-width: 700px;
+}
+
+form {
+    max-width: 300px;
 }
 
 @media screen and (max-width: 576px) {

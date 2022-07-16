@@ -20,9 +20,12 @@ let btnFetch = document.getElementById("btnFetch");;
 //-----------------RADIO BUTTONS-----------
 let dolar = document.getElementById("dolar");
 let euro = document.getElementById("euro");
+let peso = document.getElementById("peso");
+let radioButtons = document.getElementsByName('optradio');
 
 //-----------------FORMS-------------------
 let simuleForm = document.getElementById("simuleForm");
+let searchForm = document.getElementById("searchFieldset");
 
 //-----------------DIVS--------------------
 let spinner = document.getElementById("spinner");

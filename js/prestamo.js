@@ -20,7 +20,7 @@ function seleccionMoneda() {
 }
 
 function currencyFormat() {
-    let seleccion = dolar.checked ? 'USD' : 'EUR';
+    let seleccion = dolar.checked ? 'USD' : euro.checked ? 'EUR' : 'COP';
     let currencyFormat = {
         style: 'currency',
         currency: seleccion,
@@ -44,6 +44,7 @@ function initTooltips(){
 
 seleccionMoneda();
 initTooltips();
+addRadioEvents();
 
 function Simular(cuotas, tasa, monto) {
     
@@ -138,7 +139,7 @@ function calcularTabla(cuotas, tasa, monto){
             </tr>`
         }
         inputAmount.className="form-control";
-        document.getElementById("searchFieldset").disabled = false;
+        searchForm.disabled = false;
         toastMsgPopUp('','Cálculo realizado exitosamente','success',2000);
         valido = false;
         fecha.innerText= ["Cálculo realizado el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
@@ -165,7 +166,7 @@ function buscarCuota(cuotaBuscada) {
         errorLabel2.innerText="Debe ingresar un número mayor a cero.";
         MsgPopUp('Debe ingresar un número mayor a cero');
     }else{
-        if(calculo[4].some((cuota) => cuota === cuotaBuscada)){
+        if(calculo[4]?.some((cuota) => cuota === cuotaBuscada) || document.getElementById(`cuota${cuotaBuscada}`)){
             const cuotaEncontrada = document.getElementById(`cuota${cuotaBuscada}`);
             cuotaEncontrada.className = "cuotaEncontrada";
             errorLabel2.className="infoLabel";
@@ -186,10 +187,11 @@ function resetMenoresClass () {
 function pagoMayor(valorReferencia) {
 
     const celdas = document.getElementsByClassName("pagado");
-    let menores = calculo[3].filter(cuota => parseFloat(cuota) < valorReferencia);
+    let menores = calculo[3]?.filter(cuota => parseFloat(cuota) < valorReferencia);
     Array.from(celdas).forEach(celda => {
-        menores.includes(parseFloat(celda.id)) && (celda.className = "cuotaMenor");
-        // if (menores.includes(parseFloat(celda.id))){
+        let celdaIdFloat = parseFloat(celda.id);
+        (menores?.includes(celdaIdFloat) && (celda.className = "cuotaMenor") || (celdaIdFloat < valorReferencia) && (celda.className = "cuotaMenor"));
+        // if (menores?.includes(parseFloat(celda.id) || (celdaIdFloat < valorReferencia) )){
         //     celda.className = "cuotaMenor";
         // }
     });
@@ -249,17 +251,21 @@ btnBorrarCache.addEventListener("click", () => {
     }
 })
 
-dolar.addEventListener('change', ({target}) => {
-    seleccionMoneda();
-    searchAmountInput.value = '';
-    inputAmount.value = '';
-});
+function addRadioEvents(){
+    radioButtons.forEach((radio) => {
+        radio.addEventListener('change', ({target}) => {
+            seleccionMoneda();
+            searchAmountInput.value = '';
+            inputAmount.value = '';
+        });
+    })
+}
 
-euro.addEventListener('change', ({target}) => {
-    seleccionMoneda();
-    searchAmountInput.value = '';
-    inputAmount.value = '';
-});
+// euro.addEventListener('change', ({target}) => {
+//     seleccionMoneda();
+//     searchAmountInput.value = '';
+//     inputAmount.value = '';
+// });
 
 searchAmountInput.addEventListener("keyup", ({key}) => {
     formatInput(key, searchAmountInput);
@@ -287,7 +293,8 @@ btnFetch.addEventListener("click", async () => {
             spinner.classList.remove(...["spinner-border","text-primary"]);
             let respuesta = await doFetch(1);
             respuesta=='error' ? MsgPopUp('Se ha presentado error en el servicio','Atención','error') : [data, dataMoneda] = mostrarDataFetch(respuesta);
-            respuesta=='error' || toastMsgPopUp('', 'Data cargada exitosamente', 'success', 1500)
+            respuesta=='error' || toastMsgPopUp('', 'Data cargada exitosamente', 'success', 1500);
+            searchForm.disabled = false;
         },2000);
     }
 })
