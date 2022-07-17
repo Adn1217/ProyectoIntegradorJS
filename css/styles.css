@@ -90,29 +90,51 @@ form {
         margin-right: auto;
     }
 
+    #currencyRates {
+        max-width: 80%;
+    }
+
+    #currencyRates input {
+        width: 30%;
+        min-width: 75px;
+    }
+
 }
 
 .btn{
     display: block;
 }
 
-.center, #cache {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#btnFetch {
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .center {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#currencyRates {
+    max-width: 80%;
+}
+
+#currencyRates input {
+    max-width: 15%;
+}
+
+#currencyDate {
+    animation-duration: 4s; /* don't forget to set a duration! */
+}
+
+/* #btnFetch {
+    margin-left: auto;
+    margin-right: auto;
+} */
+
+.justify {
     text-align: justify;
 }
 
-#cache {
+/* #cache {
     text-align: center;
-}
+} */
 
 h2 {
     display: inline-block;
@@ -143,7 +165,11 @@ p {
 #spinner {
     display: block;
     margin-right: auto;
-    margin-left:auto;
+    margin-left: auto;
+}
+
+.margin-top-cSpinner {
+    margin-top: 10px;
 }
 
 @media screen and (max-width: 756px) {

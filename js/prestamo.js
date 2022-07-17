@@ -12,6 +12,15 @@ const settings = luxon.Settings;
 
 settings.defaultLocale = 'es-ES';
 
+seleccionMoneda();
+initTooltips();
+addRadioEvents();
+exchangeFetch();
+setInterval( () => {
+    exchangeFetch();
+}
+, 60000)
+
 function seleccionMoneda() {
     let monedaActual = dolar.checked ? 'en-US' : 'es-ES';
     let currencyFormato = currencyFormat();     
@@ -41,10 +50,6 @@ function initTooltips(){
         })
     return tooltipList;
 }
-
-seleccionMoneda();
-initTooltips();
-addRadioEvents();
 
 function Simular(cuotas, tasa, monto) {
     
@@ -415,4 +420,51 @@ window.onload = () => {
         inputAmount.value= dataLocalCargada.montoLocal;
         inputRate.value= dataLocalCargada.tasaLocal;
     }
+}
+
+async function exchangeFetch(){
+    [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
+    fechaCR.innerText = "";
+    fechaCR.className = "";
+    currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
+    try{
+        let rates = await doExchangeFetch()
+        let ratesJSON = await JSON.parse(rates);
+        currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
+        if (ratesJSON?.success) {
+            dolarInput.value = "1 USD";
+            euroInput.value = ratesJSON.rates.EUR.toFixed(2) + " EUR";
+            pesoInput.value = ratesJSON.rates.COP.toFixed(2) + " COP"
+            console.log(ratesJSON);
+            fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+            fechaCR.className = "animate__animated animate__flash";
+        }else{
+            let error = new Error(ratesJSON.message) 
+            console.error(`Se presentó el siguiente error consumiendo el servicio: '${error.message}'`)
+            fechaCR.className = "errorLabel";
+            fechaCR.innerText = `Se presentó el siguiente error consumiendo el servicio: '${error.message}'`;
+        }
+    }catch(error) {
+        console.error("Se presentó el siguiente error consumiendo el servicio:", error.message)
+        fechaCR.className = "errorLabel";
+        fechaCR.innerText = "Se presentó el siguiente error consumiendo el servicio: "+ error;
+    }
+
+}
+
+async function doExchangeFetch(){
+    let myHeaders = new Headers();
+    myHeaders.append("apikey", config.myApiKey);
+
+    let requestOptions = {
+    method: 'GET',
+    redirect: 'follow',
+    headers: myHeaders
+    };
+
+    let resp = await fetch(config.myURL, requestOptions);
+    // console.log(resp)
+    let respStr = await resp.text();
+    console.log(respStr)
+    return respStr;
 }
