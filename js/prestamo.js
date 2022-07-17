@@ -17,7 +17,7 @@ initTooltips();
 addRadioEvents();
 exchangeFetch();
 setInterval( () => {
-    exchangeFetch()
+    exchangeFetch();
 }
 , 60000)
 
@@ -431,21 +431,30 @@ async function exchangeFetch(){
         let rates = await doExchangeFetch()
         let ratesJSON = await JSON.parse(rates);
         currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
-        dolarInput.value = "1 USD";
-        euroInput.value = ratesJSON.rates.EUR.toFixed(2) + " EUR";
-        pesoInput.value = ratesJSON.rates.COP.toFixed(2) + " COP"
-        console.log(ratesJSON);
-        fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
-        fechaCR.className = "animate__animated animate__flash";
+        if (ratesJSON?.success) {
+            dolarInput.value = "1 USD";
+            euroInput.value = ratesJSON.rates.EUR.toFixed(2) + " EUR";
+            pesoInput.value = ratesJSON.rates.COP.toFixed(2) + " COP"
+            console.log(ratesJSON);
+            fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+            fechaCR.className = "animate__animated animate__flash";
+        }else{
+            let error = new Error(ratesJSON.message) 
+            console.error(`Se presentó el siguiente error consumiendo el servicio: '${error.message}'`)
+            fechaCR.className = "errorLabel";
+            fechaCR.innerText = `Se presentó el siguiente error consumiendo el servicio: '${error.message}'`;
+        }
     }catch(error) {
-        console.error("Se presentó el siguiente error consumiendo el servicio:", error)
+        console.error("Se presentó el siguiente error consumiendo el servicio:", error.message)
+        fechaCR.className = "errorLabel";
+        fechaCR.innerText = "Se presentó el siguiente error consumiendo el servicio: "+ error;
     }
 
 }
 
 async function doExchangeFetch(){
     let myHeaders = new Headers();
-    myHeaders.append("apikey", "OiGu8pOTeio3YI2aGHkfeFEw3qf8Ypim");
+    myHeaders.append("apikey", config.myApiKey);
 
     let requestOptions = {
     method: 'GET',
@@ -453,8 +462,9 @@ async function doExchangeFetch(){
     headers: myHeaders
     };
 
-    // fetch("https://api.apilayer.com/exchangerates_data/convert?to=COP&from=USD&amount=1", requestOptions)
-    let resp = await fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=COP%2CEUR&base=USD", requestOptions);
+    let resp = await fetch(config.myURL, requestOptions);
+    // console.log(resp)
     let respStr = await resp.text();
+    console.log(respStr)
     return respStr;
 }
