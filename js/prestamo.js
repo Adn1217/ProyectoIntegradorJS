@@ -429,8 +429,8 @@ async function exchangeFetch(){
     currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
     try{
         let rates = await doExchangeFetch()
-        let ratesJSON = await JSON.parse(rates);
-        currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
+            let ratesJSON = await JSON.parse(rates);
+            currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
         if (ratesJSON?.success) {
             dolarInput.value = "1 USD";
             euroInput.value = ratesJSON.rates.EUR.toFixed(2) + " EUR";
@@ -439,15 +439,17 @@ async function exchangeFetch(){
             fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
             fechaCR.className = "animate__animated animate__flash";
         }else{
-            let error = new Error(ratesJSON.message) 
-            console.error(`Se presentó el siguiente error consumiendo el servicio: '${error.message}'`)
-            fechaCR.className = "errorLabel";
-            fechaCR.innerText = `Se presentó el siguiente error consumiendo el servicio: '${error.message}'`;
+            // console.log(ratesJSON.message)
+            throw new Error(ratesJSON.message)
+            // let error = new Error(ratesJSON.message) 
+            // console.error(`Se presentó el siguiente error consumiendo el servicio: '${error.message}'`)
+            // fechaCR.className = "errorLabel";
+            // fechaCR.innerText = `Se presentó el siguiente error consumiendo el servicio: '${error.message}'`;
         }
     }catch(error) {
-        console.error("Se presentó el siguiente error consumiendo el servicio:", error.message)
+        console.error("Se presentó el siguiente error consumiendo el servicio:", error.message,". Verifique la consulta realizada.")
         fechaCR.className = "errorLabel";
-        fechaCR.innerText = "Se presentó el siguiente error consumiendo el servicio: "+ error;
+        fechaCR.innerText = "Se presentó el siguiente error consumiendo el servicio: "+ error +". Verifique la consulta realizada.";
     }
 
 }
