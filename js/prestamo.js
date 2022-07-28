@@ -89,11 +89,11 @@ function Simular(cuotas, tasa, monto) {
     }
 }
 
-function calcularFecha(){
+function calcularFecha(formatoDiaSemana ='cccc', formatoFecha = "dd'/'MM'/'yyyy" ){
 
     const ahora = DateTime.now();
-    const diaSemana = ahora.toFormat('cccc');
-    const fechaAhora = ahora.toFormat("dd'/'MM'/'yyyy") // Se puede usar toLocalString(DateTime.DATE_SHORT)
+    const diaSemana = ahora.toFormat(formatoDiaSemana);
+    const fechaAhora = ahora.toFormat(formatoFecha) // Se puede usar toLocalString(DateTime.DATE_SHORT)
     const hora = ahora.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
     return [ahora, diaSemana, fechaAhora, hora];
 }
@@ -456,17 +456,22 @@ async function exchangeFetch(){
 
 async function doExchangeFetch(){
     let myHeaders = new Headers();
-    myHeaders.append("apikey", config.myApiKey);
+    // myHeaders.append("apikey", config.myApiKey);
+    myHeaders.append("X-App-Token", config.myApiKey);
 
     let requestOptions = {
     method: 'GET',
     redirect: 'follow',
     headers: myHeaders
     };
-
-    let resp = await fetch(config.myURL, requestOptions);
+    [ahora, diaSemana, fechaAhora, hora] = calcularFecha(formatoDiaSemana ='cccc', formatoFecha='yyyy-MM-dd')
+    console.log(fechaAhora)
+    let param = '?vigenciadesde='+fechaAhora //2022-07-28';
+    let URI = config.myURL+param;
+    let resp = await fetch(URI, requestOptions);
     // console.log(resp)
     let respStr = await resp.text();
-    console.log(respStr)
-    return respStr;
+    let respJSON = JSON.parse(respStr)
+    console.log(respJSON)
+    return respStr; 
 }
