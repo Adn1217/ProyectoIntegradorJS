@@ -16,10 +16,11 @@ seleccionMoneda();
 initTooltips();
 addRadioEvents();
 exchangeFetch();
-setInterval( () => {
-    exchangeFetch();
-}
-, 60000)
+
+// setInterval( () => {
+    // exchangeFetch();
+// }
+// , 120000)
 
 function seleccionMoneda() {
     let monedaActual = dolar.checked ? 'en-US' : 'es-ES';
@@ -415,36 +416,29 @@ window.onload = () => {
     let datosLocales = new dataLocal();
     let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
     console.log(dataLocalCargada);
+    let tasaLocalCargada = datosLocales.cargarDataLocal("tasasCambio");
+    console.log(tasaLocalCargada);
     if (dataLocalCargada.length !== 0){
         inputMonths.value= dataLocalCargada.numCuotaLocal;
         inputAmount.value= dataLocalCargada.montoLocal;
         inputRate.value= dataLocalCargada.tasaLocal;
     }
+
+    if (tasaLocalCargada.length !== 0){
+        dolarInput.value = tasaLocalCargada.montoLocal +" USD";
+        euroInput.value = tasaLocalCargada.numCuotaLocal.toFixed(2)+ " EUR";
+        pesoInput.value = tasaLocalCargada.tasaLocal.toFixed(2) + " COP"
+    }
 }
 
 async function exchangeFetch(){
-    [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
-    fechaCR.innerText = "";
-    fechaCR.className = "";
-    currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
     try{
-        let rates = await doExchangeFetch()
-            let ratesJSON = await JSON.parse(rates);
-            currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
+        let rates = await doExchangeFetch();
+        let ratesJSON = await JSON.parse(rates);
         if (ratesJSON?.success) {
-            dolarInput.value = "1 USD";
-            euroInput.value = ratesJSON.rates.EUR.toFixed(2) + " EUR";
-            pesoInput.value = ratesJSON.rates.COP.toFixed(2) + " COP"
-            console.log(ratesJSON);
-            fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
-            fechaCR.className = "animate__animated animate__flash";
+            showExchange(rates, ratesJSON);
         }else{
-            // console.log(ratesJSON.message)
             throw new Error(ratesJSON.message)
-            // let error = new Error(ratesJSON.message) 
-            // console.error(`Se presentó el siguiente error consumiendo el servicio: '${error.message}'`)
-            // fechaCR.className = "errorLabel";
-            // fechaCR.innerText = `Se presentó el siguiente error consumiendo el servicio: '${error.message}'`;
         }
     }catch(error) {
         console.error("Se presentó el siguiente error consumiendo el servicio:", error.message,". Verifique la consulta realizada.")
@@ -452,6 +446,29 @@ async function exchangeFetch(){
         fechaCR.innerText = "Se presentó el siguiente error consumiendo el servicio: "+ error +". Verifique la consulta realizada.";
     }
 
+}
+
+function showExchange(rates, ratesJSON){
+
+    [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
+    fechaCR.innerText = "";
+    fechaCR.className = "";
+    currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
+    currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
+    let [dolares, euros, pesos] = [null, null, null];
+    if (ratesJSON?.success || ratesJSON?.nombre == "tasasCambio") {
+        dolares = 1;
+        euros = ratesJSON.rates.EUR;
+        pesos = ratesJSON.rates.COP;
+        dolarInput.value = dolares +" USD";
+        euroInput.value = euros.toFixed(2)+ " EUR";
+        pesoInput.value = pesos.toFixed(2) + " COP"
+        console.log(ratesJSON);
+        fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+        fechaCR.className = "animate__animated animate__flash";
+        const dataIngresada = new dataLocal(euros, pesos, dolares, "tasasCambio");
+        dataIngresada.guardarDataLocal();
+    }
 }
 
 async function doExchangeFetch(){
