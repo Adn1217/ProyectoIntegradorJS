@@ -12,10 +12,30 @@ const settings = luxon.Settings;
 
 settings.defaultLocale = 'es-ES';
 
-seleccionMoneda();
-initTooltips();
-addRadioEvents();
-exchangeFetch();
+
+window.onload = () => {
+    seleccionMoneda();
+    initTooltips();
+    addRadioEvents();
+    // exchangeFetch();
+
+    let datosLocales = new dataLocal();
+    let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
+    console.log(dataLocalCargada);
+    let tasaLocalCargada = datosLocales.cargarDataLocal("tasasCambio");
+    console.log(tasaLocalCargada);
+
+    if (dataLocalCargada.length !== 0){
+        inputMonths.value= dataLocalCargada.numCuotaLocal;
+        inputAmount.value= dataLocalCargada.montoLocal;
+        inputRate.value= dataLocalCargada.tasaLocal;
+    }
+
+    if (tasaLocalCargada.length !== 0){
+        showExchange(tasaLocalCargada);
+    }
+}
+
 
 // setInterval( () => {
     // exchangeFetch();
@@ -412,31 +432,12 @@ function toastMsgPopUp(msg, title, type, time) {
       })
 }
 
-window.onload = () => {
-    let datosLocales = new dataLocal();
-    let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
-    console.log(dataLocalCargada);
-    let tasaLocalCargada = datosLocales.cargarDataLocal("tasasCambio");
-    console.log(tasaLocalCargada);
-    if (dataLocalCargada.length !== 0){
-        inputMonths.value= dataLocalCargada.numCuotaLocal;
-        inputAmount.value= dataLocalCargada.montoLocal;
-        inputRate.value= dataLocalCargada.tasaLocal;
-    }
-
-    if (tasaLocalCargada.length !== 0){
-        dolarInput.value = tasaLocalCargada.montoLocal +" USD";
-        euroInput.value = tasaLocalCargada.numCuotaLocal.toFixed(2)+ " EUR";
-        pesoInput.value = tasaLocalCargada.tasaLocal.toFixed(2) + " COP"
-    }
-}
-
 async function exchangeFetch(){
     try{
         let rates = await doExchangeFetch();
         let ratesJSON = await JSON.parse(rates);
         if (ratesJSON?.success) {
-            showExchange(rates, ratesJSON);
+            showExchange(ratesJSON);
         }else{
             throw new Error(ratesJSON.message)
         }
@@ -448,7 +449,7 @@ async function exchangeFetch(){
 
 }
 
-function showExchange(rates, ratesJSON){
+function showExchange(ratesJSON){
 
     [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
     fechaCR.innerText = "";
@@ -456,15 +457,17 @@ function showExchange(rates, ratesJSON){
     currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
     currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
     let [dolares, euros, pesos] = [null, null, null];
+    let inicioLabel = "Vigente el";
     if (ratesJSON?.success || ratesJSON?.nombre == "tasasCambio") {
-        dolares = 1;
-        euros = ratesJSON.rates.EUR;
-        pesos = ratesJSON.rates.COP;
+        ratesJSON?.nombre && (inicioLabel = "Cargado el");
+        dolares = ratesJSON?.montoLocal || 1;
+        euros = ratesJSON.rates?.EUR || ratesJSON.tasaLocal;
+        pesos = ratesJSON.rates?.COP || ratesJSON.numCuotaLocal;
         dolarInput.value = dolares +" USD";
         euroInput.value = euros.toFixed(2)+ " EUR";
         pesoInput.value = pesos.toFixed(2) + " COP"
         console.log(ratesJSON);
-        fechaCR.innerText= ["Vigente el", diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
+        fechaCR.innerText= [inicioLabel, diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
         fechaCR.className = "animate__animated animate__flash";
         const dataIngresada = new dataLocal(euros, pesos, dolares, "tasasCambio");
         dataIngresada.guardarDataLocal();
