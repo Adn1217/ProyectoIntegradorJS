@@ -18,7 +18,7 @@ settings.defaultLocale = 'es-ES';
 window.onload = () => {
     initTooltips();
     addRadioEvents();
-    // exchangeFetch();
+    exchangeFetch();
     let datosLocales = new dataLocal();
     let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
     console.log(dataLocalCargada);
@@ -40,7 +40,7 @@ window.onload = () => {
 
 
 setInterval( () => { //Actualiza la tasa de cambio cada 2 min.
-    // exchangeFetch();
+    exchangeFetch();
 }
 , 120000)
 
