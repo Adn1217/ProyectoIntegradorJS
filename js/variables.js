@@ -37,3 +37,6 @@ let currencySpinner = document.getElementById("currencySpinner");
 //-----------------TABLE-------------------
 const tableHead = document.querySelector("thead");
 let tableBody = document.querySelector("tbody");
+
+//-----------------TITLES------------------
+const results = document.getElementById("Resultados");

@@ -5,7 +5,9 @@ let calculo = [];
 let calculoMoneda = [];
 let cuotaBuscada = 0;
 let valorReferencia = 0;
-let localData =[];
+let [dolares, euros, pesos] = [null, null, null];
+let dataIngresada = [];
+let localRateData = [];
 let moneda;
 const DateTime = luxon.DateTime;
 const settings = luxon.Settings;
@@ -14,21 +16,21 @@ settings.defaultLocale = 'es-ES';
 
 
 window.onload = () => {
-    seleccionMoneda();
     initTooltips();
     addRadioEvents();
-    // exchangeFetch();
-
+    exchangeFetch();
     let datosLocales = new dataLocal();
     let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
     console.log(dataLocalCargada);
+    dataLocalCargada.moneda == 'EUR' ? euro.checked=true : (dataLocalCargada.moneda == 'COP' ? peso.checked=true : dolar.checked=true);
+    moneda = seleccionMoneda();
     let tasaLocalCargada = datosLocales.cargarDataLocal("tasasCambio");
     console.log(tasaLocalCargada);
 
     if (dataLocalCargada.length !== 0){
         inputMonths.value= dataLocalCargada.numCuotaLocal;
-        inputAmount.value= dataLocalCargada.montoLocal;
         inputRate.value= dataLocalCargada.tasaLocal;
+        inputAmount.value= moneda.format(dataLocalCargada.montoLocal);
     }
 
     if (tasaLocalCargada.length !== 0){
@@ -37,10 +39,10 @@ window.onload = () => {
 }
 
 
-// setInterval( () => {
-    // exchangeFetch();
-// }
-// , 120000)
+setInterval( () => { //Actualiza la tasa de cambio cada 2 min.
+    exchangeFetch();
+}
+, 120000)
 
 function seleccionMoneda() {
     let monedaActual = dolar.checked ? 'en-US' : 'es-ES';
@@ -87,7 +89,7 @@ function Simular(cuotas, tasa, monto) {
 
     if(valido){
         valido = false;
-        if (tasa>0 && tasa<=1){
+        if (tasa/100>0 && tasa/100<=1){
             valido = true;
             inputRate.className="form-control";
         }else {
@@ -123,14 +125,16 @@ function calcularTabla(cuotas, tasa, monto){
     [ahora, diaSemana, fechaAhora, hora] = calcularFecha();
     valido = false;
     if (monto>0 && !isNaN(monto)){
-        let moneda = seleccionMoneda(); 
+        moneda = seleccionMoneda();
+        let currency = moneda.resolvedOptions().currency;
         valido = true;
         calculoMoneda = [];
         fecha.className="";
-        const dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value, "datosSimulacion");
+        // dataIngresada = new dataLocal(tasa, cuotas, inputAmount.value, currency "datosSimulacion");
+        dataIngresada = new dataLocal(tasa, cuotas, monto, currency, "datosSimulacion");
         // dataIngresada.guardarDataLocal(...Object.values(dataIngresada),"datosSimulacion");
         dataIngresada.guardarDataLocal();
-        const prestamo = new Prestamo(tasa, cuotas, monto);
+        const prestamo = new Prestamo(tasa/100, cuotas, monto);
         calculo = prestamo.calcularPrestamo();
         // let dataLocalStr = JSON.stringify(prestamo);
         // localStorage.setItem("dataLocalPrestamo", dataLocalStr);
@@ -138,6 +142,8 @@ function calcularTabla(cuotas, tasa, monto){
             calculoMoneda.push(col.map(moneda.format))
             })
         console.table(prestamo);
+       
+        results.innerText = "Resultados";
         tableHead.innerHTML = 
         `<tr class="animate__animated animate__bounce">
             <th>#</th>
@@ -232,7 +238,9 @@ simuleForm.addEventListener("submit", (event) =>{
     let cuotas = parseInt(inputMonths.value);
     let tasa = parseFloat(inputRate.value);
     // let num = inputAmount.value.replace(/[^0-9\.-]+/g, "") // Quita caracteres no numéricos, manteniendo el punto.
-    let monto = inputAmount.value.replace(/[^0-9]+/g, "") // Quita caracteres no numéricos.
+    let currencyOptions = moneda.resolvedOptions();
+    currencyOptions.currency == 'COP' ? monto = inputAmount.value.replace(/[^0-9,-]+/g, "") : monto = inputAmount.value.replace(/[^0-9.-]+/g, ""); // Quita caracteres no numéricos y el punto para COP o la coma para USD y EUR.
+    console.log(monto);
     errorLabel1.innerText="";
     Simular(cuotas, tasa, monto)
 })
@@ -280,18 +288,20 @@ btnBorrarCache.addEventListener("click", () => {
 function addRadioEvents(){
     radioButtons.forEach((radio) => {
         radio.addEventListener('change', ({target}) => {
+            let currencyOptions = moneda.resolvedOptions();
+            if (euros){
+                dataIngresada.nombre ?? (currencyOptions.currency == 'USD' ? monto = inputAmount.value.replace(/[^0-9.]+/g, "") : monto = inputAmount.value.replace(/[^0-9,]+/g, "")) // Quita caracteres no numéricos y el punto para COP o la coma para USD y EUR.
+                dataIngresada.nombre ?? (currencyOptions.currency !== 'USD' && (monto = monto.replace(/,/g, "."))); // Reemplaza coma por punto para COP y EUR.
+                target.id == 'euro' ? (currencyOptions.currency == 'USD' ? monto = monto * euros : monto = (monto / pesos) * euros) : target.id == 'peso' ? (currencyOptions.currency == 'USD' ? monto = monto * pesos : monto = (monto / euros) * pesos) : target.id == 'dolar' && (currencyOptions.currency == 'EUR' ? monto = monto / euros : monto = monto / pesos);
+            }
             seleccionMoneda();
-            searchAmountInput.value = '';
-            inputAmount.value = '';
+            dataIngresada.nombre && Simular(dataIngresada.numCuotaLocal,dataIngresada.tasaLocal,monto);
+            dataIngresada.nombre && (searchAmountInput.value = '');
+            dataIngresada.nombre && (errorLabel2.innerText= '');
+            inputAmount.value = moneda.format(monto);
         });
     })
 }
-
-// euro.addEventListener('change', ({target}) => {
-//     seleccionMoneda();
-//     searchAmountInput.value = '';
-//     inputAmount.value = '';
-// });
 
 searchAmountInput.addEventListener("keyup", ({key}) => {
     formatInput(key, searchAmountInput);
@@ -302,6 +312,7 @@ inputAmount.addEventListener("keyup", ({key}) => {
 })
 
 function formatInput(eventKey, element) {
+
     let num = element.value.replace(/[\D\s\._\-]+/g, ""); // Limpia la entrada de caracteres no numéricos.
     let notInputKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
     notInputKeys.includes(eventKey) ? "" : element.value = moneda.format(num);
@@ -348,6 +359,7 @@ function mostrarDataFetch(data){
     })
     // console.log(data)
     console.log("Se carga exitosamente la siguiente información:",dataMoneda);
+    results.innerText = "Resultados";
     tableHead.innerHTML = 
     `<tr class="animate__animated animate__bounce">
         <th>#</th>
@@ -456,7 +468,6 @@ function showExchange(ratesJSON){
     fechaCR.className = "";
     currencySpinner.classList.add(...["spinner-border","text-primary", "margin-top-cSpinner"]);
     currencySpinner.classList.remove(...["spinner-border","text-primary","margin-top-cSpinner"]);
-    let [dolares, euros, pesos] = [null, null, null];
     let inicioLabel = "Vigente el";
     if (ratesJSON?.success || ratesJSON?.nombre == "tasasCambio") {
         ratesJSON?.nombre && (inicioLabel = "Cargado el");
@@ -469,8 +480,8 @@ function showExchange(ratesJSON){
         console.log(ratesJSON);
         fechaCR.innerText= [inicioLabel, diaSemana, fechaAhora,"a las", hora].join(" ") + ".";
         fechaCR.className = "animate__animated animate__flash";
-        const dataIngresada = new dataLocal(euros, pesos, dolares, "tasasCambio");
-        dataIngresada.guardarDataLocal();
+        const dataIngresada = new dataLocal(euros, pesos, dolares, moneda.resolvedOptions().currency, "tasasCambio");
+        ratesJSON?.success && dataIngresada.guardarDataLocal();
     }
 }
 

@@ -1,15 +1,16 @@
 class dataLocal {
 
-    constructor(tasa, numCuotas, monto, nombre){
+    constructor(tasa, numCuotas, monto, moneda, nombre){
         this.nombre = nombre;
         this.tasaLocal = tasa;
         this.numCuotaLocal = numCuotas;
         this.montoLocal = monto;
+        this.moneda = moneda;
     }  
 
-    guardarDataLocal(tasa=this.tasaLocal, plazo=this.numCuotaLocal, monto=this.montoLocal, nombre=this.nombre){
-        let dataAGuardar = new dataLocal(tasa, plazo, monto, nombre);
-        console.log(dataAGuardar);
+    guardarDataLocal(tasa=this.tasaLocal, plazo=this.numCuotaLocal, monto=this.montoLocal, moneda=this.moneda, nombre=this.nombre){
+        let dataAGuardar = new dataLocal(tasa, plazo, monto, moneda, nombre);
+        // console.log(dataAGuardar);
         let dataLocalStr = JSON.stringify(dataAGuardar);
         localStorage.setItem(nombre, dataLocalStr);
         console.log("La siguiente información fue guardada localmente : ",dataLocalStr);

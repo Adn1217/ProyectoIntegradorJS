@@ -25,7 +25,7 @@
     <div class="container-md" id="monedas">
       <p>Seleccione moneda:</p>
       <div class="form-check">
-        <input type="radio" class="form-check-input" id="dolar" name="optradio" value="dolar" checked>$ USD
+        <input type="radio" class="form-check-input" id="dolar" name="optradio" value="dolar">$ USD
         <label class="form-check-label" for="dolar"></label>
       </div>
       <div class="form-check">
@@ -49,7 +49,7 @@
         <div>
           <label for="inputMonths">Plazo</label>
           <input type="text" class="form-control" id="inputMonths" placeholder="Ingrese plazo en meses">
-          <label for="inputRate">Tasa mensual</label>
+          <label for="inputRate">Tasa por cuota [%]</label>
           <input type="text" class="form-control" id="inputRate" placeholder="Ingrese tasa de interés">
           <label for="inputAmount">Monto</label>
           <input type="text" class="form-control" id="inputAmount" placeholder="Ingrese monto a prestar">
@@ -92,7 +92,7 @@
   <div id="Fetch" class = "center">
     <button id="btnFetch" type="button" class="btn btn-primary mb-3 center" data-toggle="tooltip" data-placement="top" title="Realiza fetch" >Cargar</button>
   </div>
-  <h2 id="Resultados">Resultados</h2>
+  <h2 id="Resultados"></h2>
   <div id="spinner" role="status">
     <!-- <span class="sr-only"></span> -->
   </div>
