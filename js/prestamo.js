@@ -18,7 +18,7 @@ settings.defaultLocale = 'es-ES';
 window.onload = () => {
     initTooltips();
     addRadioEvents();
-    exchangeFetch();
+    // exchangeFetch();
     let datosLocales = new dataLocal();
     let dataLocalCargada = datosLocales.cargarDataLocal("datosSimulacion");
     console.log(dataLocalCargada);
@@ -40,7 +40,7 @@ window.onload = () => {
 
 
 setInterval( () => { //Actualiza la tasa de cambio cada 2 min.
-    exchangeFetch();
+    // exchangeFetch();
 }
 , 120000)
 
@@ -289,9 +289,9 @@ function addRadioEvents(){
     radioButtons.forEach((radio) => {
         radio.addEventListener('change', ({target}) => {
             let currencyOptions = moneda.resolvedOptions();
+            dataIngresada.nombre ?? (currencyOptions.currency == 'USD' ? monto = inputAmount.value.replace(/[^0-9.]+/g, "") : monto = inputAmount.value.replace(/[^0-9,]+/g, "")) // Quita caracteres no numéricos y el punto para COP o la coma para USD y EUR.
+            dataIngresada.nombre ?? (currencyOptions.currency !== 'USD' && (monto = monto.replace(/,/g, "."))); // Reemplaza coma por punto para COP y EUR.
             if (euros){
-                dataIngresada.nombre ?? (currencyOptions.currency == 'USD' ? monto = inputAmount.value.replace(/[^0-9.]+/g, "") : monto = inputAmount.value.replace(/[^0-9,]+/g, "")) // Quita caracteres no numéricos y el punto para COP o la coma para USD y EUR.
-                dataIngresada.nombre ?? (currencyOptions.currency !== 'USD' && (monto = monto.replace(/,/g, "."))); // Reemplaza coma por punto para COP y EUR.
                 target.id == 'euro' ? (currencyOptions.currency == 'USD' ? monto = monto * euros : monto = (monto / pesos) * euros) : target.id == 'peso' ? (currencyOptions.currency == 'USD' ? monto = monto * pesos : monto = (monto / euros) * pesos) : target.id == 'dolar' && (currencyOptions.currency == 'EUR' ? monto = monto / euros : monto = monto / pesos);
             }
             seleccionMoneda();
